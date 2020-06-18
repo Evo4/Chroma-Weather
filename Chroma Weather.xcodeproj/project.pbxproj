@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,9 +13,13 @@
 		113F774A2499132F003AA0DF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 113F77482499132F003AA0DF /* Main.storyboard */; };
 		113F774C24991336003AA0DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 113F774B24991336003AA0DF /* Assets.xcassets */; };
 		113F774F24991336003AA0DF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 113F774D24991336003AA0DF /* LaunchScreen.storyboard */; };
+		11A449B9249B7027002121DA /* credentials.plist in Resources */ = {isa = PBXBuildFile; fileRef = 11A449B8249B7027002121DA /* credentials.plist */; };
+		11A449BE249B71E2002121DA /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A449BD249B71E2002121DA /* Settings.swift */; };
+		B7BD20406232647C3D3D3405 /* Pods_Chroma_Weather.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07654DB099FFBED704AEE5B4 /* Pods_Chroma_Weather.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		07654DB099FFBED704AEE5B4 /* Pods_Chroma_Weather.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Chroma_Weather.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		113F773F2499132F003AA0DF /* Chroma Weather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Chroma Weather.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		113F77422499132F003AA0DF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		113F77442499132F003AA0DF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -24,6 +28,10 @@
 		113F774B24991336003AA0DF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		113F774E24991336003AA0DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		113F775024991336003AA0DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		11A449B8249B7027002121DA /* credentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = credentials.plist; sourceTree = "<group>"; };
+		11A449BD249B71E2002121DA /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		8F08A8A046340EA022D63922 /* Pods-Chroma Weather.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chroma Weather.debug.xcconfig"; path = "Target Support Files/Pods-Chroma Weather/Pods-Chroma Weather.debug.xcconfig"; sourceTree = "<group>"; };
+		BA8425B6D2F0347A23B989FB /* Pods-Chroma Weather.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chroma Weather.release.xcconfig"; path = "Target Support Files/Pods-Chroma Weather/Pods-Chroma Weather.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +39,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B7BD20406232647C3D3D3405 /* Pods_Chroma_Weather.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -42,6 +51,8 @@
 			children = (
 				113F77412499132F003AA0DF /* Chroma Weather */,
 				113F77402499132F003AA0DF /* Products */,
+				22FD5CA88E9473E0D26A32E9 /* Pods */,
+				629AA29B61B32B28C1FDA75E /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,15 +67,58 @@
 		113F77412499132F003AA0DF /* Chroma Weather */ = {
 			isa = PBXGroup;
 			children = (
+				11A449BC249B71AC002121DA /* Services */,
+				11A449BB249B7185002121DA /* Helpers */,
+				11A449BA249B715C002121DA /* View */,
 				113F77422499132F003AA0DF /* AppDelegate.swift */,
 				113F77442499132F003AA0DF /* SceneDelegate.swift */,
-				113F77462499132F003AA0DF /* ViewController.swift */,
 				113F77482499132F003AA0DF /* Main.storyboard */,
 				113F774B24991336003AA0DF /* Assets.xcassets */,
 				113F774D24991336003AA0DF /* LaunchScreen.storyboard */,
 				113F775024991336003AA0DF /* Info.plist */,
+				11A449B8249B7027002121DA /* credentials.plist */,
 			);
 			path = "Chroma Weather";
+			sourceTree = "<group>";
+		};
+		11A449BA249B715C002121DA /* View */ = {
+			isa = PBXGroup;
+			children = (
+				113F77462499132F003AA0DF /* ViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		11A449BB249B7185002121DA /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		11A449BC249B71AC002121DA /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				11A449BD249B71E2002121DA /* Settings.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		22FD5CA88E9473E0D26A32E9 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				8F08A8A046340EA022D63922 /* Pods-Chroma Weather.debug.xcconfig */,
+				BA8425B6D2F0347A23B989FB /* Pods-Chroma Weather.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		629AA29B61B32B28C1FDA75E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				07654DB099FFBED704AEE5B4 /* Pods_Chroma_Weather.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,9 +128,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 113F775324991336003AA0DF /* Build configuration list for PBXNativeTarget "Chroma Weather" */;
 			buildPhases = (
+				B1E530DF914B3AE0EA1DC7FE /* [CP] Check Pods Manifest.lock */,
 				113F773B2499132F003AA0DF /* Sources */,
 				113F773C2499132F003AA0DF /* Frameworks */,
 				113F773D2499132F003AA0DF /* Resources */,
+				05B5847A5ACA83B59E0EA3B5 /* [CP] Embed Pods Frameworks */,
+				603F7D0E800EDDE5437C979A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -126,12 +183,72 @@
 			buildActionMask = 2147483647;
 			files = (
 				113F774F24991336003AA0DF /* LaunchScreen.storyboard in Resources */,
+				11A449B9249B7027002121DA /* credentials.plist in Resources */,
 				113F774C24991336003AA0DF /* Assets.xcassets in Resources */,
 				113F774A2499132F003AA0DF /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		05B5847A5ACA83B59E0EA3B5 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Chroma Weather/Pods-Chroma Weather-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Chroma Weather/Pods-Chroma Weather-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Chroma Weather/Pods-Chroma Weather-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		603F7D0E800EDDE5437C979A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Chroma Weather/Pods-Chroma Weather-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Chroma Weather/Pods-Chroma Weather-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Chroma Weather/Pods-Chroma Weather-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B1E530DF914B3AE0EA1DC7FE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Chroma Weather-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		113F773B2499132F003AA0DF /* Sources */ = {
@@ -140,6 +257,7 @@
 			files = (
 				113F77472499132F003AA0DF /* ViewController.swift in Sources */,
 				113F77432499132F003AA0DF /* AppDelegate.swift in Sources */,
+				11A449BE249B71E2002121DA /* Settings.swift in Sources */,
 				113F77452499132F003AA0DF /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -282,11 +400,13 @@
 		};
 		113F775424991336003AA0DF /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8F08A8A046340EA022D63922 /* Pods-Chroma Weather.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6BX938D4RR;
+				DEVELOPMENT_TEAM = AV6SN33FST;
 				INFOPLIST_FILE = "Chroma Weather/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -294,17 +414,19 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "app.Chroma-Weather";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
 		113F775524991336003AA0DF /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BA8425B6D2F0347A23B989FB /* Pods-Chroma Weather.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6BX938D4RR;
+				DEVELOPMENT_TEAM = AV6SN33FST;
 				INFOPLIST_FILE = "Chroma Weather/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -312,7 +434,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "app.Chroma-Weather";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
