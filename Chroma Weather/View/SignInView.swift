@@ -10,7 +10,7 @@ import UIKit
 import GoogleSignIn
 import FBSDKLoginKit
 
-class ViewController: UIViewController {
+class SignInView: UIViewController {
 
     private lazy var backgroundImageView: UIImageView = {
         let imageView = UIImageView()
@@ -43,6 +43,7 @@ class ViewController: UIViewController {
         GIDSignIn.sharedInstance()?.restorePreviousSignIn()
         
         facebookSignInButton.permissions = ["public_profile", "email"]
+        facebookSignInButton.delegate = self
     }
 
     func setupConstraints() {
@@ -78,3 +79,17 @@ class ViewController: UIViewController {
     
 }
 
+extension SignInView: LoginButtonDelegate {
+    func loginButton(_ loginButton: FBLoginButton, didCompleteWith result: LoginManagerLoginResult?, error: Error?) {
+        guard error == nil,
+            let accessToken = result?.token else {return}
+        Settings.shared.serializeUserIdToken(token: accessToken.tokenString)
+        let mainView = MainView()
+        mainView.modalPresentationStyle = .fullScreen
+        self.present(mainView, animated: true, completion: nil)
+    }
+    
+    func loginButtonDidLogOut(_ loginButton: FBLoginButton) {
+        Settings.shared.serializeUserIdToken(token: nil)
+    }
+}

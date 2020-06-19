@@ -13,6 +13,8 @@ import FBSDKCoreKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
     
+    var window: UIWindow?
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         // Initialize sign-in
@@ -20,6 +22,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         GIDSignIn.sharedInstance().delegate = self
         
         ApplicationDelegate.shared.application( application, didFinishLaunchingWithOptions: launchOptions )
+        
+        
+        if #available(iOS 13.0, *) {
+        } else {
+            window = UIWindow()
+            window?.makeKeyAndVisible()
+            if let _ = Settings.shared.userIdToken {
+                let mainVC = MainView()
+                window?.rootViewController = mainVC
+            } else {
+                let signInVC = SignInView()
+                window?.rootViewController = signInVC
+            }
+        }
         
         return true
     }
@@ -58,7 +74,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         // Perform any operations on signed in user here.
         let idToken = user.authentication.idToken
         Settings.shared.serializeUserIdToken(token: idToken)
-
+        if let _ = idToken {
+            let mainView = MainView()
+            mainView.modalPresentationStyle = .fullScreen
+            let rootViewController = UIApplication.shared.keyWindow?.rootViewController
+            rootViewController?.present(mainView, animated: true, completion: nil)
+        }
     }
     
     func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!,

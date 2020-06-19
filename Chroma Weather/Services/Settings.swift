@@ -20,9 +20,7 @@ class Settings {
     }
     private let defs = UserDefaults.standard
     
-    private init() {
-        
-    }
+    private init() {    }
     
     func serializeUserIdToken(token: String?) {
         defs.set(token, forKey: "idToken")
