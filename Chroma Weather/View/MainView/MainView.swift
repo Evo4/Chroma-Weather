@@ -56,6 +56,8 @@ class MainView: UIViewController {
         return collectionView
     }()
     
+    
+    
     private lazy var currentWeatherView: CurrentWeatherView = {
         let view = CurrentWeatherView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -103,7 +105,8 @@ class MainView: UIViewController {
             currentWeatherView.topAnchor.constraint(equalTo: forecastTypeCollectionView.bottomAnchor, constant: 30),
             currentWeatherView.leftAnchor.constraint(equalTo: menuButton.leftAnchor),
             currentWeatherView.rightAnchor.constraint(equalTo: searchButton.rightAnchor),
-            currentWeatherView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30)
+//            currentWeatherView.heightAnchor.constraint(lessThanOrEqualToConstant: 500)
+            currentWeatherView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.7)
         ])
     }
     
@@ -114,6 +117,9 @@ class MainView: UIViewController {
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        
+        locationLabel.text = Settings.shared.locationName
+        print("Settings.shared.locationName: \(Settings.shared.locationName)")
         
         locationManager.rx.location
             .map {$0 ?? CLLocation(latitude: 47.45, longitude: 35.10)}
@@ -136,15 +142,6 @@ class MainView: UIViewController {
         mainViewModel.location
             .asObservable()
             .subscribe(onNext: { [weak self] (location) in
-//                APIProvider.shared.getOneCallForecast(location: location) { (result) in
-//                    switch result {
-//                    case .success(let forecast):
-//                        print(forecast)
-//                        break
-//                    case .failure(()):
-//                        break
-//                    }
-//                }
                 APIProvider.shared.getCurrentForecast(location: location) { (result) in
                     switch result {
                     case .success(let forecast):
@@ -156,6 +153,22 @@ class MainView: UIViewController {
                     }
                 }
             }).disposed(by: disposeBag)
+        
+        mainViewModel.location
+        .asObservable()
+        .subscribe(onNext: { [weak self] (location) in
+            APIProvider.shared.getOneCallForecast(location: location) { (result) in
+                switch result {
+                case .success(let forecast):
+                    self?.mainViewModel.oneCallForecast.onNext(forecast)
+//                    Settings.shared.serializeCurrentForecast(currentForecast: forecast)
+                    break
+                case .failure(()):
+                    break
+                }
+            }
+        }).disposed(by: disposeBag)
+
         
         if let forecast = Settings.shared.currentForecast {
             mainViewModel.currentForecast
@@ -170,6 +183,24 @@ class MainView: UIViewController {
             .observeOn(MainScheduler.instance)
             .bind(to: currentWeatherView.currentForecast)
             .disposed(by: disposeBag)
+        
+        mainViewModel.forecastTypes.asObservable()
+        .startWith([
+            ForecastType(type: .today),
+            ForecastType(type: .tomorrow),
+            ForecastType(type: .nextWeek),
+            ])
+            .observeOn(MainScheduler.instance)
+            .bind(to: forecastTypeCollectionView.forecastTypes)
+            .disposed(by: disposeBag)
+        
+        mainViewModel.tomorrowForecast
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { (dailyForecast) in
+                let date = Date(timeIntervalSince1970: TimeInterval(dailyForecast.dt))
+                print(date)
+            }).disposed(by: disposeBag)
+        
     }
     
     @objc func menuAction(sender: UIButton) {

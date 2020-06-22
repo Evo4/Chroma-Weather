@@ -7,16 +7,15 @@
 //
 
 import UIKit
+import RxCocoa
+import RxSwift
 
 class ForecastTypeCollectionView: UICollectionView {
     
-    private let forecastTypes: [ForecastType] = [
-        ForecastType(type: .today),
-        ForecastType(type: .tomorrow),
-        ForecastType(type: .nextWeek),
-    ]
+    let forecastTypes = PublishSubject<[ForecastType]>()
+    private let dispodeBag = DisposeBag()
     
-    var selectedType: Int = 0 {
+    private var selectedType: Int = 0 {
         didSet {
             self.reloadData()
         }
@@ -33,35 +32,25 @@ class ForecastTypeCollectionView: UICollectionView {
     
     fileprivate func setupCollectionView() {
         self.backgroundColor = .clear
-        self.delegate = self
-        self.dataSource = self
         
         self.register(ForecastTypeCell.self, forCellWithReuseIdentifier: "cell")
+        
+     forecastTypes.asObservable()
+         .observeOn(MainScheduler.instance)
+         .bind(to: self.rx.items(cellIdentifier: "cell", cellType: ForecastTypeCell.self)) { [weak self] index, forecast, cell in
+             cell.forecastType = forecast
+             cell.selectedCallback = { [weak self] in
+                 self?.selectedType = index
+             }
+             
+             if self?.selectedType == index {
+                 cell.isSelected = true
+                 cell.isChoosed = true
+             } else {
+                 cell.isSelected = false
+                 cell.isChoosed = false
+             }
+            }.disposed(by: dispodeBag)
     }
 }
 
-extension ForecastTypeCollectionView: UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? ForecastTypeCell {
-            let forecastType = forecastTypes[indexPath.row]
-            cell.forecastType = forecastType
-            cell.selectedCallback = { [weak self] in
-                self?.selectedType = indexPath.row
-            }
-            
-            if selectedType == indexPath.row {
-                cell.isChoosed = true
-            } else {
-                cell.isChoosed = false
-            }
-            return cell
-        }
-        return UICollectionViewCell()
-    }
-    
-    
-}

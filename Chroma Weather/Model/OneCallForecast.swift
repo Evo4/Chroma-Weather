@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - Forecast
-struct Forecast: Codable {
+struct OneCallForecast: Codable {
     let lat, lon: Double
     let timezone: String
     let timezoneOffset: Int
@@ -87,7 +87,7 @@ struct Daily: Codable {
     let weather: [Weather]
     let clouds: Int
     let rain: Double?
-    let uvi: Double
+    let uvi: Double?
 
     enum CodingKeys: String, CodingKey {
         case dt, sunrise, sunset, temp

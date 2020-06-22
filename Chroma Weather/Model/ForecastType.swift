@@ -14,6 +14,6 @@ struct ForecastType {
     enum DayType: String {
         case today = "Today"
         case tomorrow = "Tomorrow"
-        case nextWeek = "Next Week"
+        case nextWeek = "Next 7 Days"
     }
 }

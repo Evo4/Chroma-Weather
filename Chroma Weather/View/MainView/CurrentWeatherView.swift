@@ -12,15 +12,20 @@ import RxSwift
 
 class CurrentWeatherView: UIView {
     
-    
+    private lazy var backgroundImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = #imageLiteral(resourceName: "opened weather card")
+        imageView.contentMode = .scaleAspectFill
+        imageView.alpha = 0.7
+        return imageView
+    }()
     
     private lazy var currentTemperatureLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont(name: "OpenSans-Regular", size: 120)
         label.textColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        label.minimumScaleFactor = 0.5
-        label.adjustsFontSizeToFitWidth = true
         label.textAlignment = .center
         return label
     }()
@@ -77,6 +82,13 @@ class CurrentWeatherView: UIView {
         return stackView
     }()
     
+    private lazy var forecastIconImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
     let disposeBag = DisposeBag()
     let currentForecast = PublishSubject<CurrentForecast>()
     
@@ -84,6 +96,7 @@ class CurrentWeatherView: UIView {
         super.init(frame: frame)
         self.backgroundColor = #colorLiteral(red: 0.3647058824, green: 0.3137254902, blue: 0.9960784314, alpha: 1)
         self.layer.cornerRadius = 39
+        self.clipsToBounds = true
         
         setupConstraints()
         
@@ -121,6 +134,22 @@ class CurrentWeatherView: UIView {
                 return "\($0.main.humidity)%"
             }.bind(to: humidityValueLabel.rx.text)
             .disposed(by: disposeBag)
+        
+        currentForecast.asObservable()
+            .observeOn(MainScheduler.instance)
+            .map {
+                return $0.weather[0].icon
+            }.subscribe(onNext: { [weak self] iconName in
+                APIProvider.shared.loadForecastIcon(iconName: iconName) { (result) in
+                    switch result {
+                    case .success(let data):
+                        self?.forecastIconImageView.image = UIImage(data: data)
+                        break
+                    case .failure(()):
+                        break
+                    }
+                }
+            }).disposed(by: disposeBag)
     }
     
     required init?(coder: NSCoder) {
@@ -128,12 +157,17 @@ class CurrentWeatherView: UIView {
     }
     
     fileprivate func setupConstraints() {
-        [currentTemperatureLabel, minTemperatureLabel, maxTemperatureLabel, descriptionLabel, humidityStackView].forEach { (subview) in
+        [backgroundImageView, currentTemperatureLabel, minTemperatureLabel, maxTemperatureLabel, descriptionLabel, humidityStackView, forecastIconImageView].forEach { (subview) in
             self.addSubview(subview)
         }
         NSLayoutConstraint.activate([
+            backgroundImageView.topAnchor.constraint(equalTo: self.topAnchor),
+            backgroundImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            backgroundImageView.leftAnchor.constraint(equalTo: self.leftAnchor),
+            backgroundImageView.rightAnchor.constraint(equalTo: self.rightAnchor),
+            
             currentTemperatureLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 20),
-            currentTemperatureLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 20),
+            currentTemperatureLabel.topAnchor.constraint(equalTo: self.topAnchor),
             
             minTemperatureLabel.topAnchor.constraint(equalTo: currentTemperatureLabel.bottomAnchor, constant: -30),
             minTemperatureLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: -70),
@@ -145,7 +179,14 @@ class CurrentWeatherView: UIView {
             descriptionLabel.topAnchor.constraint(equalTo: minTemperatureLabel.bottomAnchor, constant: 0),
             
             humidityStackView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            humidityStackView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 10)
+            humidityStackView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 10),
+            
+//            self.bottomAnchor.constraint(equalTo: humidityStackView.bottomAnchor, constant: 20),
+            
+            forecastIconImageView.heightAnchor.constraint(equalToConstant: 100),
+            forecastIconImageView.widthAnchor.constraint(equalTo: forecastIconImageView.heightAnchor),
+            forecastIconImageView.leftAnchor.constraint(equalTo: self.leftAnchor),
+            forecastIconImageView.topAnchor.constraint(equalTo: self.topAnchor)
         ])
     }
 }

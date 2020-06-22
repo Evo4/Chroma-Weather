@@ -26,7 +26,7 @@
 		11A449B9249B7027002121DA /* credentials.plist in Resources */ = {isa = PBXBuildFile; fileRef = 11A449B8249B7027002121DA /* credentials.plist */; };
 		11A449BE249B71E2002121DA /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A449BD249B71E2002121DA /* Settings.swift */; };
 		11A6D44B249D76580081CE48 /* APIProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A6D44A249D76580081CE48 /* APIProvider.swift */; };
-		11A6D44D249D7D8C0081CE48 /* Forecast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A6D44C249D7D8C0081CE48 /* Forecast.swift */; };
+		11A6D44D249D7D8C0081CE48 /* OneCallForecast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A6D44C249D7D8C0081CE48 /* OneCallForecast.swift */; };
 		B7BD20406232647C3D3D3405 /* Pods_Chroma_Weather.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07654DB099FFBED704AEE5B4 /* Pods_Chroma_Weather.framework */; };
 /* End PBXBuildFile section */
 
@@ -53,7 +53,7 @@
 		11A449B8249B7027002121DA /* credentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = credentials.plist; sourceTree = "<group>"; };
 		11A449BD249B71E2002121DA /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		11A6D44A249D76580081CE48 /* APIProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIProvider.swift; sourceTree = "<group>"; };
-		11A6D44C249D7D8C0081CE48 /* Forecast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Forecast.swift; sourceTree = "<group>"; };
+		11A6D44C249D7D8C0081CE48 /* OneCallForecast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneCallForecast.swift; sourceTree = "<group>"; };
 		8F08A8A046340EA022D63922 /* Pods-Chroma Weather.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chroma Weather.debug.xcconfig"; path = "Target Support Files/Pods-Chroma Weather/Pods-Chroma Weather.debug.xcconfig"; sourceTree = "<group>"; };
 		BA8425B6D2F0347A23B989FB /* Pods-Chroma Weather.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chroma Weather.release.xcconfig"; path = "Target Support Files/Pods-Chroma Weather/Pods-Chroma Weather.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -120,7 +120,7 @@
 			isa = PBXGroup;
 			children = (
 				114EA805249D178100C6EAF1 /* ForecastType.swift */,
-				11A6D44C249D7D8C0081CE48 /* Forecast.swift */,
+				11A6D44C249D7D8C0081CE48 /* OneCallForecast.swift */,
 				1142E4CD249E351600B8185B /* CurrentForecast.swift */,
 			);
 			path = Model;
@@ -329,7 +329,7 @@
 				1143148B249BA25400F75B33 /* MainView.swift in Sources */,
 				113F77432499132F003AA0DF /* AppDelegate.swift in Sources */,
 				11A449BE249B71E2002121DA /* Settings.swift in Sources */,
-				11A6D44D249D7D8C0081CE48 /* Forecast.swift in Sources */,
+				11A6D44D249D7D8C0081CE48 /* OneCallForecast.swift in Sources */,
 				113F77452499132F003AA0DF /* SceneDelegate.swift in Sources */,
 				114EA806249D178100C6EAF1 /* ForecastType.swift in Sources */,
 				1142E4CE249E351600B8185B /* CurrentForecast.swift in Sources */,

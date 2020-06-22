@@ -28,9 +28,9 @@ class APIProvider {
     
     private init() {    }
     
-    func getOneCallForecast(location: CLLocation, completion: @escaping ((ServerResult<Forecast,Void>)->())) {
-        guard let url = URL(string: "https://api.openweathermap.org/data/2.5/onecall?lat=\(location.coordinate.latitude)&lon=\(location.coordinate.longitude)&%20exclude=current,hourly&appid=\(Settings.shared.openWeatherAPIKey)") else {return}
-        AF.request(url, method: .get).responseDecodable(of: Forecast.self) { (response) in
+    func getOneCallForecast(location: CLLocation, completion: @escaping ((ServerResult<OneCallForecast,Void>)->())) {
+        guard let url = URL(string: "https://api.openweathermap.org/data/2.5/onecall?lat=\(location.coordinate.latitude)&lon=\(location.coordinate.longitude)&%20exclude=daily&appid=\(Settings.shared.openWeatherAPIKey)") else {return}
+        AF.request(url, method: .get).responseDecodable(of: OneCallForecast.self) { (response) in
             switch response.result {
             case .success(let forecast):
                 completion(.success(forecast))
@@ -56,5 +56,18 @@ class APIProvider {
         }
     }
     
+    func loadForecastIcon(iconName: String, completion: @escaping((ServerResult<Data,Void>)->())) {
+        guard let url = URL(string: "http://openweathermap.org/img/w/\(iconName).png") else {return}
+        AF.request(url).responseData { (response) in
+            switch response.result {
+            case .success(let data):
+                completion(.success(data))
+                break
+            case .failure(_):
+                completion(.failure(()))
+                break
+            }
+        }
+    }
     
 }
