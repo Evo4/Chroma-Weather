@@ -28,7 +28,7 @@ class Settings {
         return deserilizeLocationName()
     }
     
-    var currentForecast: CurrentForecast? {
+    var currentForecast: Forecast? {
         return deserializeCurrentForecast()
     }
     
@@ -52,13 +52,13 @@ class Settings {
         return locationName
     }
     
-    func serializeCurrentForecast(currentForecast: CurrentForecast) {
+    func serializeCurrentForecast(currentForecast: Forecast) {
         defs.set(try? PropertyListEncoder().encode(currentForecast), forKey: "currentForecast")
     }
     
-    private func deserializeCurrentForecast() -> CurrentForecast? {
+    private func deserializeCurrentForecast() -> Forecast? {
         guard let data = defs.object(forKey: "currentForecast") as? Data,
-            let lang = try? PropertyListDecoder().decode(CurrentForecast.self, from: data) else {
+            let lang = try? PropertyListDecoder().decode(Forecast.self, from: data) else {
                 return nil
         }
         return lang

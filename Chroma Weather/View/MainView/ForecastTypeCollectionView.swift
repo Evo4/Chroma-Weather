@@ -21,6 +21,8 @@ class ForecastTypeCollectionView: UICollectionView {
         }
     }
     
+    var forecastTypeCallback: ((Int)->())?
+    
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout)
         setupCollectionView()
@@ -40,7 +42,8 @@ class ForecastTypeCollectionView: UICollectionView {
          .bind(to: self.rx.items(cellIdentifier: "cell", cellType: ForecastTypeCell.self)) { [weak self] index, forecast, cell in
              cell.forecastType = forecast
              cell.selectedCallback = { [weak self] in
-                 self?.selectedType = index
+                self?.selectedType = index
+                self?.forecastTypeCallback?(index)
              }
              
              if self?.selectedType == index {

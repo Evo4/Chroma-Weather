@@ -42,9 +42,9 @@ class APIProvider {
         }
     }
     
-    func getCurrentForecast(location: CLLocation, completion: @escaping ((ServerResult<CurrentForecast,Void>)->())) {
+    func getCurrentForecast(location: CLLocation, completion: @escaping ((ServerResult<Forecast,Void>)->())) {
         guard let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?lat=\(location.coordinate.latitude)&lon=\(location.coordinate.longitude)&appid=\(Settings.shared.openWeatherAPIKey)") else {return}
-        AF.request(url, method: .get).responseDecodable(of: CurrentForecast.self) { (response) in
+        AF.request(url, method: .get).responseDecodable(of: Forecast.self) { (response) in
             switch response.result {
             case .success(let forecast):
                 completion(.success(forecast))

@@ -1,0 +1,130 @@
+//
+//  DailyForecastInfoScrollView.swift
+//  Chroma Weather
+//
+//  Created by Vyacheslav on 23.06.2020.
+//  Copyright © 2020 Vyacheslav. All rights reserved.
+//
+
+import UIKit
+import RxCocoa
+import RxSwift
+
+class DailyForecastInfoScrollView: ForecastInfoScrollView {
+
+    let disposeBag = DisposeBag()
+    let forecast = PublishSubject<DailyForecast>()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.isDayLabelHidden = false
+        
+        setupObservers()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    
+    fileprivate func setupObservers() {
+        forecast.asObservable()
+            .observeOn(MainScheduler.instance)
+            .map {
+                let date = Date(timeIntervalSince1970: TimeInterval($0.dt))
+                return date.toString(style: .weekday)
+            }.bind(to: dayLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        forecast.asObservable()
+            .observeOn(MainScheduler.instance)
+            .map {
+                return $0.weather[0].icon
+            }.subscribe(onNext: { [weak self] iconName in
+                APIProvider.shared.loadForecastIcon(iconName: iconName) { (result) in
+                    switch result {
+                    case .success(let data):
+                        self?.iconImageView.image = UIImage(data: data)
+                        break
+                    case .failure(()):
+                        break
+                    }
+                }
+            }).disposed(by: disposeBag)
+        
+        forecast.asObservable()
+            .observeOn(MainScheduler.instance)
+            .map {
+                return $0.temp.day.toCelsius()
+            }.bind(to: currentTemperatureLabel.rx.text)
+            .disposed(by: disposeBag)
+
+        forecast.asObservable()
+            .observeOn(MainScheduler.instance)
+            .map {
+                return $0.weather[0].weatherDescription.capitalizingFirstLetter()
+            }.bind(to: descriptionLabel.rx.text)
+            .disposed(by: disposeBag)
+//
+        forecast.asObservable()
+            .observeOn(MainScheduler.instance)
+            .map {
+                return $0.temp.min.toCelsius()
+            }.bind(to: minTemperatureLabel.rx.text)
+            .disposed(by: disposeBag)
+
+        forecast.asObservable()
+            .observeOn(MainScheduler.instance)
+            .map {
+                return $0.temp.max.toCelsius()
+            }.bind(to: maxTemperatureLabel.rx.text)
+            .disposed(by: disposeBag)
+
+        forecast.asObservable()
+            .observeOn(MainScheduler.instance)
+            .map {
+                return "\($0.humidity)%"
+            }.bind(to: humidityValueLabel.rx.text)
+            .disposed(by: disposeBag)
+
+        forecast.asObservable()
+            .observeOn(MainScheduler.instance)
+            .map { forecast -> String in
+                let date = Date(timeIntervalSince1970: TimeInterval(forecast.sunrise))
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "HH:mm"
+                return dateFormatter.string(from: date)
+            }.bind(to: sunriseValueLabel.rx.text)
+            .disposed(by: disposeBag)
+
+        forecast.asObservable()
+        .observeOn(MainScheduler.instance)
+        .map { forecast -> String in
+            let date = Date(timeIntervalSince1970: TimeInterval(forecast.sunset))
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "HH:mm"
+            return dateFormatter.string(from: date)
+        }.bind(to: sunsetValueLabel.rx.text)
+        .disposed(by: disposeBag)
+
+        forecast.asObservable()
+            .observeOn(MainScheduler.instance)
+            .map {
+                return "\($0.windSpeed) km/hr"
+            }.bind(to: windValueLabel.rx.text)
+            .disposed(by: disposeBag)
+
+        forecast.asObservable()
+            .observeOn(MainScheduler.instance)
+            .map {
+                return $0.feelsLike.day.toCelsius()
+            }.bind(to: feelsLikeValueLabel.rx.text)
+            .disposed(by: disposeBag)
+
+        forecast.asObservable()
+            .observeOn(MainScheduler.instance)
+            .map {
+                return "\($0.pressure) hPa"
+            }.bind(to: pressureValueLabel.rx.text)
+            .disposed(by: disposeBag)
+    }
+}

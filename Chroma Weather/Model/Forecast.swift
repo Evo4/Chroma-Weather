@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - Forecast
-struct CurrentForecast: Codable {
+struct Forecast: Codable {
     let coord: Coord
     let weather: [Weather]
     let base: String
@@ -22,6 +22,7 @@ struct CurrentForecast: Codable {
     let timezone, id: Int
     let name: String
     let cod: Int
+    var hourlyForecast: [HourlyForecast]? = []
 }
 
 // MARK: - Clouds

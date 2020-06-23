@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import AFDateHelper
 
 // MARK: - Double
@@ -31,22 +32,39 @@ extension String {
 
 // MARK: - Date
 extension Date {
-    func isEqualToDateIgnoringTime(date: Date) -> Bool
-    {
+    private func isEqualToDateIgnoringTime(date: Date) -> Bool {
         let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
         let date1Components = calendar.dateComponents([.year, .month, .day], from: self)
         let date2Components = calendar.dateComponents([.year, .month, .day], from: date)
         return (date1Components.year == date2Components.year) && (date1Components.month == date2Components.month) && (date1Components.day == date2Components.day)
-//        let comp1 = Date.components(fromDate: self)
-//        let comp2 = Date.components(fromDate: date)
-//        return ((comp1.year == comp2.year) && (comp1.month == comp2.month) && (comp1.day == comp2.day))
+    }
+    
+    private func isNextHourOfDay(date: Date)-> Bool {
+        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+        let date1Components = calendar.dateComponents([.year, .month, .day, .hour], from: self)
+        let date2Components = calendar.dateComponents([.year, .month, .day, .hour], from: date)
+        return (date1Components.year == date2Components.year) && (date1Components.month == date2Components.month) && (date1Components.day == date2Components.day) && (date1Components.hour! > date2Components.hour!)
+    }
+    
+    func isNextHour()-> Bool {
+        return self.isNextHourOfDay(date: Date())
+    }
+    
+    /**
+    Returns Returns true if date is today.
+    */
+    func isToday() -> Bool {
+        return self.isEqualToDateIgnoringTime(date: Date())
+    }
+    
+    func isDay(of date: Date)-> Bool {
+        return self.isEqualToDateIgnoringTime(date: date)
     }
     
     /**
     Returns true if date is tomorrow.
     */
-    func isTomorrow() -> Bool
-    {
+    func isTomorrow() -> Bool {
         let date = Date()
         let calendar = Calendar(identifier: .gregorian)
         if let date = calendar.date(byAdding: .day, value: 1, to: date) {
@@ -54,7 +72,27 @@ extension Date {
         } else {
             return self.isEqualToDateIgnoringTime(date: date)
         }
-//        return self.isEqualToDateIgnoringTime(Date().dateByAddingDays(1))
-//        return self.isEqualToDateIgnoringTime(date: )
+    }
+}
+
+//MARK: - UIView
+extension UIView {
+    func roundCorners(corners: UIRectCorner, radius: CGFloat) {
+        if #available(iOS 11, *) {
+            self.clipsToBounds = true
+            self.layer.cornerRadius = radius
+            var masked = CACornerMask()
+            if corners.contains(.topLeft) { masked.insert(.layerMinXMinYCorner) }
+            if corners.contains(.topRight) { masked.insert(.layerMaxXMinYCorner) }
+            if corners.contains(.bottomLeft) { masked.insert(.layerMinXMaxYCorner) }
+            if corners.contains(.bottomRight) { masked.insert(.layerMaxXMaxYCorner) }
+            self.layer.maskedCorners = masked
+        }
+        else {
+            let path = UIBezierPath(roundedRect: bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+            let mask = CAShapeLayer()
+            mask.path = path.cgPath
+            layer.mask = mask
+        }
     }
 }

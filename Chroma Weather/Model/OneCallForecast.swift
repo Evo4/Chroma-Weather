@@ -14,8 +14,8 @@ struct OneCallForecast: Codable {
     let timezone: String
     let timezoneOffset: Int
     let current: Current
-    let hourly: [Hourly]
-    let daily: [Daily]
+    let hourly: [HourlyForecast]
+    let daily: [DailyForecast]
 
     enum CodingKeys: String, CodingKey {
         case lat, lon, timezone
@@ -77,13 +77,13 @@ enum Main: String, Codable {
 }
 
 // MARK: - Daily
-struct Daily: Codable {
+struct DailyForecast: Codable {
     let dt, sunrise, sunset: Int
     let temp: Temp
     let feelsLike: FeelsLike
     let pressure, humidity: Int
     let dewPoint, windSpeed: Double
-    let windDeg: Int
+    let windDeg: Double
     let weather: [Weather]
     let clouds: Int
     let rain: Double?
@@ -112,7 +112,7 @@ struct Temp: Codable {
 }
 
 // MARK: - Hourly
-struct Hourly: Codable {
+struct HourlyForecast: Codable {
     let dt: Int
     let temp, feelsLike: Double
     let pressure, humidity: Int

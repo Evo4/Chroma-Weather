@@ -56,11 +56,23 @@ class MainView: UIViewController {
         return collectionView
     }()
     
-    
-    
-    private lazy var currentWeatherView: CurrentWeatherView = {
-        let view = CurrentWeatherView()
+    private lazy var currentWeatherView: WeatherInfoView = {
+        let view = WeatherInfoView()
         view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private lazy var tomorrowWeatherView: WeatherInfoView = {
+        let view = WeatherInfoView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.alpha = 0
+        return view
+    }()
+    
+    private lazy var nextWeekForecastView: NextWeekForecastView = {
+        let view = NextWeekForecastView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.alpha = 0
         return view
     }()
     
@@ -74,10 +86,39 @@ class MainView: UIViewController {
         setupConstraints()
         
         setupLocation()
+        setupForecast()
+        
+        forecastTypeCollectionView.forecastTypeCallback = { [weak self] type in
+            switch type {
+            case 0:
+                UIView.animate(withDuration: 0.6, delay: 0, options: .curveEaseOut, animations: {
+                    self?.tomorrowWeatherView.alpha = 0
+                    self?.nextWeekForecastView.alpha = 0
+                    self?.currentWeatherView.alpha = 1
+                }, completion: nil)
+                break
+            case 1:
+                UIView.animate(withDuration: 0.6, delay: 0, options: .curveEaseOut, animations: {
+                    self?.currentWeatherView.alpha = 0
+                    self?.nextWeekForecastView.alpha = 0
+                    self?.tomorrowWeatherView.alpha = 1
+                }, completion: nil)
+                break
+            case 2:
+                UIView.animate(withDuration: 0.6, delay: 0, options: .curveEaseOut, animations: {
+                    self?.currentWeatherView.alpha = 0
+                    self?.tomorrowWeatherView.alpha = 0
+                    self?.nextWeekForecastView.alpha = 1
+                }, completion: nil)
+                break
+            default:
+                break
+            }
+        }
     }
     
     func setupConstraints() {
-        [locationLabel, searchButton, menuButton, forecastTypeCollectionView, currentWeatherView].forEach { (subview) in
+        [locationLabel, searchButton, menuButton, forecastTypeCollectionView, currentWeatherView, tomorrowWeatherView, nextWeekForecastView].forEach { (subview) in
             view.addSubview(subview)
         }
         NSLayoutConstraint.activate([
@@ -105,8 +146,17 @@ class MainView: UIViewController {
             currentWeatherView.topAnchor.constraint(equalTo: forecastTypeCollectionView.bottomAnchor, constant: 30),
             currentWeatherView.leftAnchor.constraint(equalTo: menuButton.leftAnchor),
             currentWeatherView.rightAnchor.constraint(equalTo: searchButton.rightAnchor),
-//            currentWeatherView.heightAnchor.constraint(lessThanOrEqualToConstant: 500)
-            currentWeatherView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.7)
+            currentWeatherView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.7),
+            
+            tomorrowWeatherView.topAnchor.constraint(equalTo: forecastTypeCollectionView.bottomAnchor, constant: 30),
+            tomorrowWeatherView.leftAnchor.constraint(equalTo: menuButton.leftAnchor),
+            tomorrowWeatherView.rightAnchor.constraint(equalTo: searchButton.rightAnchor),
+            tomorrowWeatherView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.7),
+            
+            nextWeekForecastView.topAnchor.constraint(equalTo: forecastTypeCollectionView.bottomAnchor, constant: 30),
+            nextWeekForecastView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            nextWeekForecastView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            nextWeekForecastView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.7),
         ])
     }
     
@@ -119,28 +169,32 @@ class MainView: UIViewController {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         
         locationLabel.text = Settings.shared.locationName
-        print("Settings.shared.locationName: \(Settings.shared.locationName)")
         
         locationManager.rx.location
             .map {$0 ?? CLLocation(latitude: 47.45, longitude: 35.10)}
             .observeOn(MainScheduler.instance)
+            .asObservable()
             .bind(to: mainViewModel.location.asObserver())
             .disposed(by: disposeBag)
-        
+    }
+    
+    fileprivate func setupForecast() {
         if let location = Settings.shared.locationName {
             mainViewModel.getLocationName()
-            .observeOn(MainScheduler.instance)
-            .startWith(location)
-            .bind(to: locationLabel.rx.text)
-            .disposed(by: disposeBag)
+                .observeOn(MainScheduler.instance)
+                .startWith(location)
+                .bind(to: locationLabel.rx.text)
+                .disposed(by: disposeBag)
+        } else {
+            mainViewModel.getLocationName()
+                .observeOn(MainScheduler.instance)
+                .bind(to: locationLabel.rx.text)
+                .disposed(by: disposeBag)
         }
-        mainViewModel.getLocationName()
-            .observeOn(MainScheduler.instance)
-            .bind(to: locationLabel.rx.text)
-            .disposed(by: disposeBag)
         
         mainViewModel.location
             .asObservable()
+            .observeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] (location) in
                 APIProvider.shared.getCurrentForecast(location: location) { (result) in
                     switch result {
@@ -155,52 +209,68 @@ class MainView: UIViewController {
             }).disposed(by: disposeBag)
         
         mainViewModel.location
-        .asObservable()
-        .subscribe(onNext: { [weak self] (location) in
-            APIProvider.shared.getOneCallForecast(location: location) { (result) in
-                switch result {
-                case .success(let forecast):
-                    self?.mainViewModel.oneCallForecast.onNext(forecast)
-//                    Settings.shared.serializeCurrentForecast(currentForecast: forecast)
-                    break
-                case .failure(()):
-                    break
+            .asObservable()
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { [weak self] (location) in
+                APIProvider.shared.getOneCallForecast(location: location) { (result) in
+                    switch result {
+                    case .success(let forecast):
+                        self?.mainViewModel.oneCallForecast.onNext(forecast)
+//                        Settings.shared.serializeCurrentForecast(currentForecast: forecast)
+                        break
+                    case .failure(()):
+                        break
+                    }
                 }
-            }
-        }).disposed(by: disposeBag)
-
+            }).disposed(by: disposeBag)
         
         if let forecast = Settings.shared.currentForecast {
             mainViewModel.currentForecast
-            .asObservable()
-            .observeOn(MainScheduler.instance)
-            .startWith(forecast)
-            .bind(to: currentWeatherView.currentForecast)
-            .disposed(by: disposeBag)
+                .asObservable()
+                .observeOn(MainScheduler.instance)
+                .startWith(forecast)
+                .bind(to: currentWeatherView.currentForecast)
+                .disposed(by: disposeBag)
+        } else {
+            mainViewModel.currentForecast
+                .asObservable()
+                .observeOn(MainScheduler.instance)
+                .bind(to: currentWeatherView.currentForecast)
+                .disposed(by: disposeBag)
         }
-        mainViewModel.currentForecast
-            .asObservable()
-            .observeOn(MainScheduler.instance)
-            .bind(to: currentWeatherView.currentForecast)
-            .disposed(by: disposeBag)
         
         mainViewModel.forecastTypes.asObservable()
-        .startWith([
-            ForecastType(type: .today),
-            ForecastType(type: .tomorrow),
-            ForecastType(type: .nextWeek),
+            .startWith([
+                ForecastType(type: .today),
+                ForecastType(type: .tomorrow),
+                ForecastType(type: .nextWeek),
             ])
             .observeOn(MainScheduler.instance)
             .bind(to: forecastTypeCollectionView.forecastTypes)
             .disposed(by: disposeBag)
         
+        mainViewModel.todayHourlyForecast
+        .observeOn(MainScheduler.instance)
+        .bind(to: currentWeatherView.hourlyForecasts.asObserver())
+        .disposed(by: disposeBag)
+        
         mainViewModel.tomorrowForecast
             .observeOn(MainScheduler.instance)
-            .subscribe(onNext: { (dailyForecast) in
-                let date = Date(timeIntervalSince1970: TimeInterval(dailyForecast.dt))
-                print(date)
-            }).disposed(by: disposeBag)
+            .bind(to: tomorrowWeatherView.currentForecast)
+            .disposed(by: disposeBag)
         
+        mainViewModel.tomorrowForecast
+            .observeOn(MainScheduler.instance)
+            .map {
+                return $0.hourlyForecast ?? []
+            }.bind(to: tomorrowWeatherView.hourlyForecasts)
+            .disposed(by: disposeBag)
+        
+        mainViewModel.dailyForecasts
+            .asObservable()
+            .observeOn(MainScheduler.instance)
+            .bind(to: nextWeekForecastView.forecasts)
+            .disposed(by: disposeBag)
     }
     
     @objc func menuAction(sender: UIButton) {
