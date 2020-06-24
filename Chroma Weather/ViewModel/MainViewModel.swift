@@ -36,7 +36,6 @@ class MainViewModel {
     func getLocationName()->Observable<String> {
         return Observable.create { (observable) -> Disposable in
             var disposeBag: DisposeBag! = DisposeBag()
-            
             self.location.asObserver().subscribe(onNext: { (location) in
                 let geoCoder = CLGeocoder()
                 geoCoder.reverseGeocodeLocation(location) { (placemarks, _) in

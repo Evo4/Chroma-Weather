@@ -9,6 +9,8 @@
 import UIKit
 import GoogleSignIn
 import FBSDKCoreKit
+import GooglePlaces
+import GoogleMaps
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
@@ -16,7 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-
+//        GMSServices.provideAPIKey("AIzaSyAM69k0ZR4OdGWa3rQLRS-jEDlsz5m1zYI")
+        GMSPlacesClient.provideAPIKey("AIzaSyAM69k0ZR4OdGWa3rQLRS-jEDlsz5m1zYI")
         // Initialize sign-in
         GIDSignIn.sharedInstance().clientID = "737174957061-ccoouasgtksl05vl0cr296ut7t14vqe3.apps.googleusercontent.com"
         GIDSignIn.sharedInstance().delegate = self

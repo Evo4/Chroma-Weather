@@ -95,4 +95,72 @@ extension UIView {
             layer.mask = mask
         }
     }
+    
+    func setGradientBackground(color1: UIColor, color2: UIColor) {
+        let colorTop = color1.cgColor
+        let colorBottom = color2.cgColor
+
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [colorTop, colorBottom]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 0, y: 1)
+        gradientLayer.frame = CGRect(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height)
+
+        self.layer.insertSublayer(gradientLayer, at:0)
+    }
+    
+    func setGradientBackground(color1: UIColor, color2: UIColor, width: CGFloat, height: CGFloat) {
+        let colorTop = color1.cgColor
+        let colorBottom = color2.cgColor
+
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [colorTop, colorBottom]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 0, y: 1)
+        gradientLayer.frame = CGRect(x: 0, y: 0, width: width, height: height)
+
+        self.layer.insertSublayer(gradientLayer, at:0)
+    }
+}
+
+//MARK: - UIColor
+
+extension UIColor {
+    // MARK: - methods for color brightness
+    func lighter(by percentage: CGFloat = 30.0) -> UIColor? {
+        return self.adjust(by: abs(percentage) )
+    }
+    
+    func darker(by percentage: CGFloat = 30.0) -> UIColor? {
+        return self.adjust(by: -1 * abs(percentage) )
+    }
+    
+    func adjust(by percentage: CGFloat = 30.0) -> UIColor? {
+        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+        if self.getRed(&red, green: &green, blue: &blue, alpha: &alpha) {
+            return UIColor(red: min(red + percentage/100, 1.0),
+                           green: min(green + percentage/100, 1.0),
+                           blue: min(blue + percentage/100, 1.0),
+                           alpha: alpha)
+        } else {
+            return nil
+        }
+    }
+    
+    static let dayColors: [String : UIColor] = [
+        "Monday" : #colorLiteral(red: 0.1568627451, green: 0.8784313725, blue: 0.6823529412, alpha: 1),
+        "Tuesday" : #colorLiteral(red: 1, green: 0, blue: 0.5647058824, alpha: 1),
+        "Wednesday" : #colorLiteral(red: 1, green: 0.6823529412, blue: 0, alpha: 1),
+        "Thursday" : #colorLiteral(red: 0, green: 0.5647058824, blue: 1, alpha: 1),
+        "Friday" : #colorLiteral(red: 0.862745098, green: 0, blue: 0, alpha: 1),
+        "Saturday" : #colorLiteral(red: 0, green: 0.3176470588, blue: 1, alpha: 1),
+        "Sunday" : #colorLiteral(red: 0.842262849, green: 0.3658883037, blue: 0, alpha: 1),
+    ]
+    
+    static func getDayColor(day: String)-> UIColor {
+        if day == "Monday" {
+            return UIColor.dayColors["Monday"]!
+        }
+        return UIColor.dayColors[day] ?? #colorLiteral(red: 0.1568627451, green: 0.8784313725, blue: 0.6823529412, alpha: 1)
+    }
 }

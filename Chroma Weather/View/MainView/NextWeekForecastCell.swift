@@ -11,7 +11,7 @@ import RxCocoa
 import RxSwift
 
 class NextWeekForecastCell: UICollectionViewCell {
- 
+    
     private lazy var dayLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -46,7 +46,7 @@ class NextWeekForecastCell: UICollectionViewCell {
     private lazy var minTemperatureLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.2)
+        label.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.4)
         label.font = UIFont(name: "OpenSans-Bold", size: 23)
         return label
     }()
@@ -70,7 +70,6 @@ class NextWeekForecastCell: UICollectionViewCell {
     private lazy var button: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-//        button.addTarget(self, action: #selector(handleAction(sender:)), for: .touchUpInside)
         return button
     }()
     
@@ -83,7 +82,8 @@ class NextWeekForecastCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.layer.cornerRadius = 36
-        self.backgroundColor = #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1)
+        self.clipsToBounds = true
+        self.backgroundColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
         
         setupConstraints()
         
@@ -155,6 +155,7 @@ class NextWeekForecastCell: UICollectionViewCell {
             self.addSubview(subview)
         }
         NSLayoutConstraint.activate([
+            
             dayLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             dayLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 30),
             
@@ -173,19 +174,4 @@ class NextWeekForecastCell: UICollectionViewCell {
             button.rightAnchor.constraint(equalTo: self.rightAnchor),
         ])
     }
-    
-//    @objc func handleAction(sender: UIButton) {
-//        detailForecastCallback?()
-//        guard let rootController = UIApplication.shared.keyWindow?.rootViewController else {return}
-//        let detailView = DetailForecastView()
-//
-//        forecast.asObservable()
-//            .debug("daily forecast")
-//            .observeOn(MainScheduler.instance)
-//            .bind(to: detailView.forecast.asObserver())
-//            .disposed(by: disposeBag)
-//
-//
-//        rootController.present(detailView, animated: true, completion: nil)
-//    }
 }

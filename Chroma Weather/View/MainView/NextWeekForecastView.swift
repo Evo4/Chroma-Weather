@@ -32,10 +32,24 @@ class NextWeekForecastView: UIView {
         forecastCollectionView.register(NextWeekForecastCell.self, forCellWithReuseIdentifier: "cell")
         forecastCollectionView.delegate = self
         
+        var keys = [String]()
+        forecasts.asObservable()
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { forecasts in
+                forecasts.forEach { (forecast) in
+                    let date = Date(timeIntervalSince1970: TimeInterval(forecast.dt))
+                    let day = date.toString(style: .weekday)
+                    keys.append(day)
+                }
+            }).disposed(by: disposeBag)
+        
         forecasts.asObservable()
             .observeOn(MainScheduler.instance)
             .bind(to: forecastCollectionView.rx.items(cellIdentifier: "cell", cellType: NextWeekForecastCell.self)) { index, forecast, cell in
                 cell.forecast.onNext(forecast)
+                cell.backgroundColor = UIColor.dayColors[keys[index]]
+                
+                
             }.disposed(by: disposeBag)
     }
     

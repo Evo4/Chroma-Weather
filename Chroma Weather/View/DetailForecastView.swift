@@ -17,6 +17,7 @@ class DetailForecastView: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1)
         view.roundCorners(corners: [.topLeft, .topRight], radius: 55)
+        view.clipsToBounds = true
         return view
     }()
     
@@ -54,6 +55,17 @@ class DetailForecastView: UIViewController {
             .observeOn(MainScheduler.instance)
             .bind(to: forecastInfoScrollView.forecast.asObserver())
             .disposed(by: disposeBag)
+        
+        forecast.asObservable()
+            .startWith(dailyForecast)
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { [weak self] (forecast) in
+                let date = Date(timeIntervalSince1970: TimeInterval(forecast.dt))
+                let day = date.toString(style: .weekday)
+                let color = UIColor.getDayColor(day: day)
+                self?.backView.setGradientBackground(color1: color.lighter(by: 20)!, color2: color, width: self!.view.frame.size.width, height: self!.view.frame.size.height * 0.88)
+            }).disposed(by: disposeBag)
+
     }
     
     fileprivate func setupConstraints() {

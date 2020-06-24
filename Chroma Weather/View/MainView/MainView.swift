@@ -11,6 +11,7 @@ import CoreLocation
 import RxCoreLocation
 import RxSwift
 import RxCocoa
+import GooglePlaces
 
 class MainView: UIViewController {
 
@@ -30,7 +31,6 @@ class MainView: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(#imageLiteral(resourceName: "Search-Dark"), for: .normal)
         button.imageView?.contentMode = .scaleAspectFill
-        button.addTarget(self, action: #selector(searchAction(sender:)), for: .touchUpInside)
         return button
     }()
     
@@ -39,14 +39,13 @@ class MainView: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(#imageLiteral(resourceName: "menu"), for: .normal)
         button.imageView?.contentMode = .scaleAspectFill
-        button.addTarget(self, action: #selector(menuAction(sender:)), for: .touchUpInside)
         return button
     }()
 
     private lazy var forecastTypeCollectionView: ForecastTypeCollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 25
+        layout.minimumInteritemSpacing = 15
         layout.minimumLineSpacing = 0
         layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         
@@ -115,6 +114,25 @@ class MainView: UIViewController {
                 break
             }
         }
+        
+        searchButton.rx.tap
+            .bind(onNext: { [weak self] in
+                let autocompleteController = GMSAutocompleteViewController()
+                autocompleteController.delegate = self
+
+                // Specify the place data types to return.
+                let fields: GMSPlaceField = GMSPlaceField(rawValue: UInt(GMSPlaceField.name.rawValue) |
+                  UInt(GMSPlaceField.placeID.rawValue))!
+                autocompleteController.placeFields = fields
+
+                // Specify a filter.
+                let filter = GMSAutocompleteFilter()
+                filter.type = .city
+                autocompleteController.autocompleteFilter = filter
+
+                // Display the autocomplete view controller.
+                self?.present(autocompleteController, animated: true, completion: nil)
+            }).disposed(by: disposeBag)
     }
     
     func setupConstraints() {
@@ -139,7 +157,7 @@ class MainView: UIViewController {
             locationLabel.rightAnchor.constraint(equalTo: searchButton.leftAnchor, constant: -20),
             
             forecastTypeCollectionView.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 30),
-            forecastTypeCollectionView.widthAnchor.constraint(equalToConstant: 265),
+            forecastTypeCollectionView.widthAnchor.constraint(equalToConstant: 270),
             forecastTypeCollectionView.heightAnchor.constraint(equalToConstant: 40),
             forecastTypeCollectionView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
@@ -161,8 +179,6 @@ class MainView: UIViewController {
     }
     
     fileprivate func setupLocation() {
-//        GMSServices.provideAPIKey("AIzaSyCMzwfJKAJ8TS__mt72EcopUc1VFpykwtQ")
-        
         locationManager.delegate = self
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()
@@ -170,12 +186,18 @@ class MainView: UIViewController {
         
         locationLabel.text = Settings.shared.locationName
         
-        locationManager.rx.location
-            .map {$0 ?? CLLocation(latitude: 47.45, longitude: 35.10)}
-            .observeOn(MainScheduler.instance)
-            .asObservable()
-            .bind(to: mainViewModel.location.asObserver())
-            .disposed(by: disposeBag)
+//        locationManager.rx.location
+//            .map {$0 ?? CLLocation(latitude: 47.45, longitude: 35.10)}
+//            .observeOn(MainScheduler.instance)
+//            .asObservable()
+//            .bind(to: mainViewModel.location.asObserver())
+//            .disposed(by: disposeBag)
+        
+//        locationManager.rx.location
+//            .asSingle()
+//            .subscribe(onSuccess: { (location) in
+//                self.mainViewModel.location.asObserver().onNext(location ?? CLLocation(latitude: 47.45, longitude: 35.10))
+//            }).disposed(by: disposeBag)
     }
     
     fileprivate func setupForecast() {
@@ -194,12 +216,13 @@ class MainView: UIViewController {
         
         mainViewModel.location
             .asObservable()
+            .startWith(locationManager.location ?? CLLocation(latitude: 47.45, longitude: 35.10))
             .observeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] (location) in
                 APIProvider.shared.getCurrentForecast(location: location) { (result) in
                     switch result {
                     case .success(let forecast):
-                        self?.mainViewModel.currentForecast.onNext(forecast)
+                        self?.mainViewModel.currentForecast.asObserver().onNext(forecast)
                         Settings.shared.serializeCurrentForecast(currentForecast: forecast)
                         break
                     case .failure(()):
@@ -210,12 +233,13 @@ class MainView: UIViewController {
         
         mainViewModel.location
             .asObservable()
+            .startWith(locationManager.location ?? CLLocation(latitude: 47.45, longitude: 35.10))
             .observeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] (location) in
                 APIProvider.shared.getOneCallForecast(location: location) { (result) in
                     switch result {
                     case .success(let forecast):
-                        self?.mainViewModel.oneCallForecast.onNext(forecast)
+                        self?.mainViewModel.oneCallForecast.asObserver().onNext(forecast)
 //                        Settings.shared.serializeCurrentForecast(currentForecast: forecast)
                         break
                     case .failure(()):
@@ -273,12 +297,8 @@ class MainView: UIViewController {
             .disposed(by: disposeBag)
     }
     
-    @objc func menuAction(sender: UIButton) {
-        
-    }
-
-    @objc func searchAction(sender: UIButton) {
-        
+    func getCoordinateFrom(address: String, completion: @escaping(_ coordinate: CLLocationCoordinate2D?, _ error: Error?) -> () ) {
+        CLGeocoder().geocodeAddressString(address) { completion($0?.first?.location?.coordinate, $1) }
     }
 }
 
@@ -292,4 +312,40 @@ extension MainView: CLLocationManagerDelegate {
             }
         }
     }
+}
+
+extension MainView: GMSAutocompleteViewControllerDelegate {
+
+  // Handle the user's selection.
+  func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
+    getCoordinateFrom(address: place.name ?? "") { [weak self] coordinate, error in
+        guard let coordinate = coordinate, error == nil else { return }
+        self?.mainViewModel.location.asObserver().onNext(CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude))
+        DispatchQueue.main.async {
+            print(place.name ?? "", "Location:", coordinate)
+        }
+
+    }
+    dismiss(animated: true, completion: nil)
+  }
+
+  func viewController(_ viewController: GMSAutocompleteViewController, didFailAutocompleteWithError error: Error) {
+    // TODO: handle the error.
+    print("Error: ", error.localizedDescription)
+  }
+
+  // User canceled the operation.
+  func wasCancelled(_ viewController: GMSAutocompleteViewController) {
+    dismiss(animated: true, completion: nil)
+  }
+
+  // Turn the network activity indicator on and off again.
+  func didRequestAutocompletePredictions(_ viewController: GMSAutocompleteViewController) {
+    UIApplication.shared.isNetworkActivityIndicatorVisible = true
+  }
+
+  func didUpdateAutocompletePredictions(_ viewController: GMSAutocompleteViewController) {
+    UIApplication.shared.isNetworkActivityIndicatorVisible = false
+  }
+
 }

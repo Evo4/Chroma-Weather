@@ -168,7 +168,6 @@
 		117C7D7F249D0FF8007AF7F2 /* MainView */ = {
 			isa = PBXGroup;
 			children = (
-				1115D7D524A28419008737B9 /* ForecastInfoScrollView */,
 				1143148A249BA25400F75B33 /* MainView.swift */,
 				117C7D80249D1024007AF7F2 /* WeatherInfoView.swift */,
 				117C7D82249D12AE007AF7F2 /* ForecastTypeCollectionView.swift */,
@@ -177,6 +176,7 @@
 				11B040AC24A1047100B7A47F /* HourlyForecastCell.swift */,
 				11B040B424A2173200B7A47F /* NextWeekForecastView.swift */,
 				11B040B824A218D600B7A47F /* NextWeekForecastCell.swift */,
+				1115D7D524A28419008737B9 /* ForecastInfoScrollView */,
 			);
 			path = MainView;
 			sourceTree = "<group>";

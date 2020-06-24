@@ -19,11 +19,23 @@ class DailyForecastInfoScrollView: ForecastInfoScrollView {
         super.init(frame: frame)
         self.isDayLabelHidden = false
         
+        configureLabels()
         setupObservers()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+    }
+    
+    fileprivate func configureLabels() {
+        let color = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.4)
+        minTemperatureLabel.textColor = color
+        humidityValueLabel.textColor = color
+        sunsetValueLabel.textColor = color
+        sunriseValueLabel.textColor = color
+        windValueLabel.textColor = color
+        feelsLikeValueLabel.textColor = color
+        pressureValueLabel.textColor = color
     }
     
     fileprivate func setupObservers() {

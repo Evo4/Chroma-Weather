@@ -24,6 +24,10 @@ class Settings {
         return "ae23d67b60e778a5f2e70166f6953419"
     }
     
+    var googleAPIKey: String {
+        return "AIzaSyAF8L1Zmi-zbzyhRNOuEPHQML4Qi9_UFuQ"
+    }
+    
     var locationName: String? {
         return deserilizeLocationName()
     }
