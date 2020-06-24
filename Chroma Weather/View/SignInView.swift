@@ -9,6 +9,10 @@
 import UIKit
 import GoogleSignIn
 import FBSDKLoginKit
+import CoreLocation
+import RxCoreLocation
+import RxCocoa
+import RxSwift
 
 class SignInView: UIViewController {
 
@@ -31,6 +35,9 @@ class SignInView: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
+    
+    let mainViewModel = MainViewModel()
+    let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,9 +91,18 @@ extension SignInView: LoginButtonDelegate {
         guard error == nil,
             let accessToken = result?.token else {return}
         Settings.shared.serializeUserIdToken(token: accessToken.tokenString)
-        let mainView = MainView()
-        mainView.modalPresentationStyle = .fullScreen
-        self.present(mainView, animated: true, completion: nil)
+        
+        mainViewModel.configureLocationManager()
+        mainViewModel.locationManager.rx
+            .didChangeAuthorization
+            .subscribe(onNext: { [weak self] _, status in
+                self?.mainViewModel.configureLocation(status: status, completion: {
+                    let mainView = MainView()
+                    mainView.modalPresentationStyle = .fullScreen
+                    self?.present(mainView, animated: true, completion: nil)
+                })
+            })
+            .disposed(by: disposeBag)
     }
     
     func loginButtonDidLogOut(_ loginButton: FBLoginButton) {

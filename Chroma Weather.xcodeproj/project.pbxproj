@@ -25,6 +25,7 @@
 		114FB0DD249D03F1003CC3FD /* OpenSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 114FB0DB249D03F1003CC3FD /* OpenSans-Bold.ttf */; };
 		117C7D81249D1024007AF7F2 /* WeatherInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117C7D80249D1024007AF7F2 /* WeatherInfoView.swift */; };
 		117C7D83249D12AE007AF7F2 /* ForecastTypeCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117C7D82249D12AE007AF7F2 /* ForecastTypeCollectionView.swift */; };
+		118BC3D224A38F6700F7371E /* RealmLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118BC3D124A38F6700F7371E /* RealmLocation.swift */; };
 		11A449B9249B7027002121DA /* credentials.plist in Resources */ = {isa = PBXBuildFile; fileRef = 11A449B8249B7027002121DA /* credentials.plist */; };
 		11A449BE249B71E2002121DA /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A449BD249B71E2002121DA /* Settings.swift */; };
 		11A6D44B249D76580081CE48 /* APIProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A6D44A249D76580081CE48 /* APIProvider.swift */; };
@@ -62,6 +63,7 @@
 		114FB0DB249D03F1003CC3FD /* OpenSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Bold.ttf"; sourceTree = "<group>"; };
 		117C7D80249D1024007AF7F2 /* WeatherInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherInfoView.swift; sourceTree = "<group>"; };
 		117C7D82249D12AE007AF7F2 /* ForecastTypeCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastTypeCollectionView.swift; sourceTree = "<group>"; };
+		118BC3D124A38F6700F7371E /* RealmLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmLocation.swift; sourceTree = "<group>"; };
 		11A449B8249B7027002121DA /* credentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = credentials.plist; sourceTree = "<group>"; };
 		11A449BD249B71E2002121DA /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		11A6D44A249D76580081CE48 /* APIProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIProvider.swift; sourceTree = "<group>"; };
@@ -149,6 +151,7 @@
 		114EA804249D176B00C6EAF1 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				11B76CF324A3B89E0035C62D /* Realm Models */,
 				114EA805249D178100C6EAF1 /* ForecastType.swift */,
 				11A6D44C249D7D8C0081CE48 /* OneCallForecast.swift */,
 				1142E4CD249E351600B8185B /* Forecast.swift */,
@@ -208,6 +211,14 @@
 				11A6D44A249D76580081CE48 /* APIProvider.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		11B76CF324A3B89E0035C62D /* Realm Models */ = {
+			isa = PBXGroup;
+			children = (
+				118BC3D124A38F6700F7371E /* RealmLocation.swift */,
+			);
+			path = "Realm Models";
 			sourceTree = "<group>";
 		};
 		22FD5CA88E9473E0D26A32E9 /* Pods */ = {
@@ -370,6 +381,7 @@
 				113F77432499132F003AA0DF /* AppDelegate.swift in Sources */,
 				11B040B524A2173200B7A47F /* NextWeekForecastView.swift in Sources */,
 				11A449BE249B71E2002121DA /* Settings.swift in Sources */,
+				118BC3D224A38F6700F7371E /* RealmLocation.swift in Sources */,
 				11A6D44D249D7D8C0081CE48 /* OneCallForecast.swift in Sources */,
 				11B040B724A2179100B7A47F /* SnapPagingLayout.swift in Sources */,
 				11B040AB24A0F58D00B7A47F /* ColumnFlowLayout.swift in Sources */,

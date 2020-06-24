@@ -29,7 +29,8 @@ class CommonForecastInfoScrollView: ForecastInfoScrollView {
         currentForecast.asObservable()
             .observeOn(MainScheduler.instance)
             .map {
-                return $0.main.temp.toCelsius()
+                let main = $0.main ?? Stats()
+                return main.temp.toCelsius()
             }.bind(to: currentTemperatureLabel.rx.text)
             .disposed(by: disposeBag)
         
@@ -43,28 +44,32 @@ class CommonForecastInfoScrollView: ForecastInfoScrollView {
         currentForecast.asObservable()
             .observeOn(MainScheduler.instance)
             .map {
-                return $0.main.tempMin.toCelsius()
+                let main = $0.main ?? Stats()
+                return main.tempMin.toCelsius()
             }.bind(to: minTemperatureLabel.rx.text)
             .disposed(by: disposeBag)
         
         currentForecast.asObservable()
             .observeOn(MainScheduler.instance)
             .map {
-                return $0.main.tempMax.toCelsius()
+                let main = $0.main ?? Stats()
+                return main.tempMax.toCelsius()
             }.bind(to: maxTemperatureLabel.rx.text)
             .disposed(by: disposeBag)
         
         currentForecast.asObservable()
             .observeOn(MainScheduler.instance)
             .map {
-                return "\($0.main.humidity)%"
+                let main = $0.main ?? Stats()
+                return "\(main.humidity)%"
             }.bind(to: humidityValueLabel.rx.text)
             .disposed(by: disposeBag)
         
         currentForecast.asObservable()
             .observeOn(MainScheduler.instance)
             .map { forecast -> String in
-                let date = Date(timeIntervalSince1970: TimeInterval(forecast.sys.sunrise))
+                let sys = forecast.sys ?? Sys()
+                let date = Date(timeIntervalSince1970: TimeInterval(sys.sunrise))
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "HH:mm"
                 return dateFormatter.string(from: date)
@@ -74,7 +79,8 @@ class CommonForecastInfoScrollView: ForecastInfoScrollView {
         currentForecast.asObservable()
         .observeOn(MainScheduler.instance)
         .map { forecast -> String in
-            let date = Date(timeIntervalSince1970: TimeInterval(forecast.sys.sunset))
+            let sys = forecast.sys ?? Sys()
+            let date = Date(timeIntervalSince1970: TimeInterval(sys.sunset))
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "HH:mm"
             return dateFormatter.string(from: date)
@@ -84,21 +90,24 @@ class CommonForecastInfoScrollView: ForecastInfoScrollView {
         currentForecast.asObservable()
             .observeOn(MainScheduler.instance)
             .map {
-                return "\($0.wind.speed) km/hr"
+                let wind = $0.wind ?? Wind()
+                return "\(wind.speed) km/hr"
             }.bind(to: windValueLabel.rx.text)
             .disposed(by: disposeBag)
         
         currentForecast.asObservable()
             .observeOn(MainScheduler.instance)
             .map {
-                return $0.main.feelsLike.toCelsius()
+                let main = $0.main ?? Stats()
+                return main.feelsLike.toCelsius()
             }.bind(to: feelsLikeValueLabel.rx.text)
             .disposed(by: disposeBag)
         
         currentForecast.asObservable()
             .observeOn(MainScheduler.instance)
             .map {
-                return "\($0.main.pressure) hPa"
+                let main = $0.main ?? Stats()
+                return "\(main.pressure) hPa"
             }.bind(to: pressureValueLabel.rx.text)
             .disposed(by: disposeBag)
     }

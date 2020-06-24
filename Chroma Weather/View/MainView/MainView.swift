@@ -12,6 +12,8 @@ import RxCoreLocation
 import RxSwift
 import RxCocoa
 import GooglePlaces
+import RealmSwift
+import RxRealm
 
 class MainView: UIViewController {
 
@@ -83,8 +85,10 @@ class MainView: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         setupConstraints()
-        
         setupLocation()
+        
+        setupRealmBinding()
+        
         setupForecast()
         
         forecastTypeCollectionView.forecastTypeCallback = { [weak self] type in
@@ -178,52 +182,56 @@ class MainView: UIViewController {
         ])
     }
     
+    fileprivate func setupRealmBinding() {
+        if mainViewModel.realmLocations.count == 0 {
+            let location = locationManager.location ?? CLLocation(latitude: 47.858176, longitude: 35.103274)
+            let realmLocation = RealmLocation()
+            realmLocation.latitude = location.coordinate.latitude
+            realmLocation.longitude = location.coordinate.longitude
+
+            try! mainViewModel.realm.write {
+                mainViewModel.realm.add(realmLocation)
+            }
+        }
+        
+        locationManager.rx
+            .didChangeAuthorization
+            .subscribe(onNext: { [weak self] _, status in
+//                self?.mainViewModel.configureLocation(status: status, manager: self!.locationManager)
+            })
+            .disposed(by: disposeBag)
+        
+        Observable.arrayWithChangeset(from: mainViewModel.realmLocations)
+            .subscribe(onNext: { [weak self] array, changes in
+                let location = CLLocation(latitude: array[0].latitude, longitude: array[0].longitude)
+                if let _ = changes {
+                    self?.mainViewModel.location.asObserver().onNext(location)
+                } else {
+                    self?.mainViewModel.location.asObserver().onNext(location)
+                }
+            }).disposed(by: disposeBag)
+    }
+    
     fileprivate func setupLocation() {
-        locationManager.delegate = self
-        locationManager.requestAlwaysAuthorization()
-        locationManager.startUpdatingLocation()
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        
-        locationLabel.text = Settings.shared.locationName
-        
-//        locationManager.rx.location
-//            .map {$0 ?? CLLocation(latitude: 47.45, longitude: 35.10)}
-//            .observeOn(MainScheduler.instance)
-//            .asObservable()
-//            .bind(to: mainViewModel.location.asObserver())
-//            .disposed(by: disposeBag)
-        
-//        locationManager.rx.location
-//            .asSingle()
-//            .subscribe(onSuccess: { (location) in
-//                self.mainViewModel.location.asObserver().onNext(location ?? CLLocation(latitude: 47.45, longitude: 35.10))
-//            }).disposed(by: disposeBag)
+//        locationManager.requestAlwaysAuthorization()
+//        locationManager.startUpdatingLocation()
+//        locationManager.desiredAccuracy = kCLLocationAccuracyBest
     }
     
     fileprivate func setupForecast() {
-        if let location = Settings.shared.locationName {
-            mainViewModel.getLocationName()
-                .observeOn(MainScheduler.instance)
-                .startWith(location)
-                .bind(to: locationLabel.rx.text)
-                .disposed(by: disposeBag)
-        } else {
-            mainViewModel.getLocationName()
-                .observeOn(MainScheduler.instance)
-                .bind(to: locationLabel.rx.text)
-                .disposed(by: disposeBag)
-        }
+        let location = CLLocation(latitude: mainViewModel.realmLocations[0].latitude, longitude: mainViewModel.realmLocations[0].longitude)
         
         mainViewModel.location
             .asObservable()
-            .startWith(locationManager.location ?? CLLocation(latitude: 47.45, longitude: 35.10))
+            .startWith(location)
             .observeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] (location) in
                 APIProvider.shared.getCurrentForecast(location: location) { (result) in
                     switch result {
                     case .success(let forecast):
                         self?.mainViewModel.currentForecast.asObserver().onNext(forecast)
-                        Settings.shared.serializeCurrentForecast(currentForecast: forecast)
+                        self?.currentWeatherView.forecastInfoAlpha = 1
+//                        print("location: \(location)")
                         break
                     case .failure(()):
                         break
@@ -233,20 +241,25 @@ class MainView: UIViewController {
         
         mainViewModel.location
             .asObservable()
-            .startWith(locationManager.location ?? CLLocation(latitude: 47.45, longitude: 35.10))
+            .startWith(location)
             .observeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] (location) in
                 APIProvider.shared.getOneCallForecast(location: location) { (result) in
                     switch result {
                     case .success(let forecast):
                         self?.mainViewModel.oneCallForecast.asObserver().onNext(forecast)
-//                        Settings.shared.serializeCurrentForecast(currentForecast: forecast)
+                        self?.tomorrowWeatherView.forecastInfoAlpha = 1
                         break
                     case .failure(()):
                         break
                     }
                 }
             }).disposed(by: disposeBag)
+        
+        mainViewModel.getLocationName()
+            .observeOn(MainScheduler.instance)
+            .bind(to: locationLabel.rx.text)
+            .disposed(by: disposeBag)
         
         if let forecast = Settings.shared.currentForecast {
             mainViewModel.currentForecast
@@ -283,12 +296,12 @@ class MainView: UIViewController {
             .bind(to: tomorrowWeatherView.currentForecast)
             .disposed(by: disposeBag)
         
-        mainViewModel.tomorrowForecast
-            .observeOn(MainScheduler.instance)
-            .map {
-                return $0.hourlyForecast ?? []
-            }.bind(to: tomorrowWeatherView.hourlyForecasts)
-            .disposed(by: disposeBag)
+//        mainViewModel.tomorrowForecast
+//            .observeOn(MainScheduler.instance)
+//            .map {
+//                return $0.hourlyForecast ?? []
+//            }.bind(to: tomorrowWeatherView.hourlyForecasts)
+//            .disposed(by: disposeBag)
         
         mainViewModel.dailyForecasts
             .asObservable()
@@ -302,25 +315,20 @@ class MainView: UIViewController {
     }
 }
 
-extension MainView: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        if status == .authorizedAlways {
-            if CLLocationManager.isMonitoringAvailable(for: CLBeaconRegion.self) {
-                if CLLocationManager.isRangingAvailable() {
-                    // do stuff
-                }
-            }
-        }
-    }
-}
-
 extension MainView: GMSAutocompleteViewControllerDelegate {
 
   // Handle the user's selection.
   func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
     getCoordinateFrom(address: place.name ?? "") { [weak self] coordinate, error in
         guard let coordinate = coordinate, error == nil else { return }
-        self?.mainViewModel.location.asObserver().onNext(CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude))
+        
+        let locations = self!.mainViewModel.realm.objects(RealmLocation.self)
+        try! self?.mainViewModel.realm.write {
+            locations[0].latitude = coordinate.latitude
+            locations[0].longitude = coordinate.longitude
+        }
+        
+//        self?.mainViewModel.location.asObserver().onNext(CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude))
         DispatchQueue.main.async {
             print(place.name ?? "", "Location:", coordinate)
         }

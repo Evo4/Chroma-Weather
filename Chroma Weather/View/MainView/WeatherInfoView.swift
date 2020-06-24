@@ -24,6 +24,7 @@ class WeatherInfoView: UIView {
     private lazy var forecastInfoScrollView: CommonForecastInfoScrollView = {
         let scrollView = CommonForecastInfoScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.alpha = 0
         return scrollView
     }()
     
@@ -43,6 +44,12 @@ class WeatherInfoView: UIView {
     let disposeBag = DisposeBag()
     let currentForecast = PublishSubject<Forecast>()
     let hourlyForecasts = PublishSubject<[HourlyForecast]>()
+    
+    var forecastInfoAlpha: CGFloat = 0.0 {
+        didSet {
+            self.forecastInfoScrollView.alpha = forecastInfoAlpha
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)

@@ -12,13 +12,23 @@ import RxCocoa
 import CoreLocation
 import RxCoreLocation
 import AFDateHelper
+import RxRealm
+import RealmSwift
 
 class MainViewModel {
+    let locationManager = CLLocationManager()
+    
     let location = PublishSubject<CLLocation>()
     
     let currentForecast = PublishSubject<Forecast>()
     let oneCallForecast = PublishSubject<OneCallForecast>()
-
+    
+    let realm = try! Realm()
+    
+    var realmLocations: Results<RealmLocation> {
+        return self.realm.objects(RealmLocation.self)
+    }
+    
     var tomorrowForecast: Observable<Forecast> {
         return getTommorowForecast()
     }
@@ -34,15 +44,20 @@ class MainViewModel {
     let forecastTypes = PublishSubject<[ForecastType]>()
     
     func getLocationName()->Observable<String> {
-        return Observable.create { (observable) -> Disposable in
+        return Observable.create { [weak self] (observable) -> Disposable in
             var disposeBag: DisposeBag! = DisposeBag()
-            self.location.asObserver().subscribe(onNext: { (location) in
+            let location = CLLocation(latitude: self!.realmLocations[0].latitude, longitude: self!.realmLocations[0].longitude)
+            self?.location
+                .asObservable()
+                .startWith(location)
+                .observeOn(MainScheduler.instance)
+                .subscribe(onNext: { (location) in
                 let geoCoder = CLGeocoder()
                 geoCoder.reverseGeocodeLocation(location) { (placemarks, _) in
                     placemarks?.forEach({ (placemark) in
                         if let city = placemark.locality, let country = placemark.country {
                             let locationName = "\(city), \(country)"
-                            Settings.shared.serializeLocationName(of: locationName)
+//                            Settings.shared.serializeLocationName(of: locationName)
                             observable.onNext(locationName)
                         }
                     })
@@ -62,7 +77,7 @@ class MainViewModel {
                 forecast.daily.forEach { (dailyForecast) in
                     let date = Date(timeIntervalSince1970: TimeInterval(dailyForecast.dt))
                     if date.isTomorrow() {
-                        newForecast = Forecast(coord: Coord(lon: 0, lat: 0), weather: dailyForecast.weather, base: "", main: Stats(temp: dailyForecast.temp.day, feelsLike: dailyForecast.feelsLike.day, tempMin: dailyForecast.temp.min, tempMax: dailyForecast.temp.max, pressure: dailyForecast.pressure, humidity: dailyForecast.humidity), visibility: 0, wind: Wind(speed: dailyForecast.windSpeed, deg: dailyForecast.windDeg), clouds: Clouds(all: dailyForecast.clouds), dt: dailyForecast.dt, sys: Sys(type: 0, id: 0, country: "", sunrise: dailyForecast.sunrise, sunset: dailyForecast.sunset), timezone: 0, id: 0, name: "", cod: 0)
+//                        newForecast = Forecast(coord: Coord(lon: 0, lat: 0), weather: dailyForecast.weather, base: "", main: Stats(temp: dailyForecast.temp.day, feelsLike: dailyForecast.feelsLike.day, tempMin: dailyForecast.temp.min, tempMax: dailyForecast.temp.max, pressure: dailyForecast.pressure, humidity: dailyForecast.humidity), visibility: 0, wind: Wind(speed: dailyForecast.windSpeed, deg: dailyForecast.windDeg), clouds: Clouds(all: dailyForecast.clouds), dt: dailyForecast.dt, sys: Sys(type: 0, id: 0, country: "", sunrise: dailyForecast.sunrise, sunset: dailyForecast.sunset), timezone: 0, id: 0, name: "", cod: 0)
                     }
                 }
                 forecast.hourly.forEach { (hourlyForecast) in
@@ -70,7 +85,7 @@ class MainViewModel {
                     let date1 = Date(timeIntervalSince1970: TimeInterval(hourlyForecast.dt))
                     let date2 = Date(timeIntervalSince1970: TimeInterval(forecast.dt))
                     if date1.isDay(of: date2) {
-                        newForecast?.hourlyForecast?.append(hourlyForecast)
+//                        newForecast?.hourlyForecast?.append(hourlyForecast)
                     }
                 }
                 if let forecast = newForecast {
@@ -128,4 +143,36 @@ class MainViewModel {
         }
     }
     
+    func configureLocationManager() {
+        locationManager.requestAlwaysAuthorization()
+        locationManager.startUpdatingLocation()
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+    }
+    
+    func configureLocation(status: CLAuthorizationStatus, completion: @escaping (()->())) {
+        var location: CLLocation?
+        switch status {
+        case .denied:
+            location = locationManager.location
+        case .notDetermined:
+            location = locationManager.location
+        case .restricted:
+            location = locationManager.location
+        case .authorizedAlways, .authorizedWhenInUse:
+            location = locationManager.location
+        @unknown default:
+            break
+        }
+        if self.realmLocations.count == 0 {
+            let location = location ?? CLLocation(latitude: 50.432275, longitude: 30.541816)
+            let realmLocation = RealmLocation()
+            realmLocation.latitude = location.coordinate.latitude
+            realmLocation.longitude = location.coordinate.longitude
+
+            try! self.realm.write {
+                self.realm.add(realmLocation)
+            }
+        }
+        completion()
+    }
 }

@@ -11,11 +11,16 @@ import GoogleSignIn
 import FBSDKCoreKit
 import GooglePlaces
 import GoogleMaps
+import RxCocoa
+import RxSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
     
     var window: UIWindow?
+    
+    let mainViewModel = MainViewModel()
+    let disposeBag = DisposeBag()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 //        GMSServices.provideAPIKey("AIzaSyAM69k0ZR4OdGWa3rQLRS-jEDlsz5m1zYI")
@@ -78,10 +83,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         let idToken = user.authentication.idToken
         Settings.shared.serializeUserIdToken(token: idToken)
         if let _ = idToken {
-            let mainView = MainView()
-            mainView.modalPresentationStyle = .fullScreen
-            let rootViewController = UIApplication.shared.keyWindow?.rootViewController
-            rootViewController?.present(mainView, animated: true, completion: nil)
+            
+            mainViewModel.configureLocationManager()
+            mainViewModel.locationManager.rx
+                .didChangeAuthorization
+                .subscribe(onNext: { [weak self] _, status in
+                    self?.mainViewModel.configureLocation(status: status, completion: {
+                        let mainView = MainView()
+                        mainView.modalPresentationStyle = .fullScreen
+                        let rootViewController = UIApplication.shared.keyWindow?.rootViewController
+                        rootViewController?.present(mainView, animated: true, completion: nil)
+                    })
+                })
+                .disposed(by: disposeBag)
         }
     }
     
