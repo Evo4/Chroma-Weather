@@ -296,12 +296,14 @@ class MainView: UIViewController {
             .bind(to: tomorrowWeatherView.currentForecast)
             .disposed(by: disposeBag)
         
-//        mainViewModel.tomorrowForecast
-//            .observeOn(MainScheduler.instance)
-//            .map {
-//                return $0.hourlyForecast ?? []
-//            }.bind(to: tomorrowWeatherView.hourlyForecasts)
-//            .disposed(by: disposeBag)
+        mainViewModel.tomorrowForecast
+            .observeOn(MainScheduler.instance)
+            .map {
+                return $0.hourlyForecast
+            }.subscribe(onNext: { [weak self] (listHourlyForecast) in
+                let hourlyForecast = Array(listHourlyForecast)
+                self?.tomorrowWeatherView.hourlyForecasts.asObserver().onNext(hourlyForecast)
+            }).disposed(by: disposeBag)
         
         mainViewModel.dailyForecasts
             .asObservable()

@@ -77,7 +77,25 @@ class MainViewModel {
                 forecast.daily.forEach { (dailyForecast) in
                     let date = Date(timeIntervalSince1970: TimeInterval(dailyForecast.dt))
                     if date.isTomorrow() {
-//                        newForecast = Forecast(coord: Coord(lon: 0, lat: 0), weather: dailyForecast.weather, base: "", main: Stats(temp: dailyForecast.temp.day, feelsLike: dailyForecast.feelsLike.day, tempMin: dailyForecast.temp.min, tempMax: dailyForecast.temp.max, pressure: dailyForecast.pressure, humidity: dailyForecast.humidity), visibility: 0, wind: Wind(speed: dailyForecast.windSpeed, deg: dailyForecast.windDeg), clouds: Clouds(all: dailyForecast.clouds), dt: dailyForecast.dt, sys: Sys(type: 0, id: 0, country: "", sunrise: dailyForecast.sunrise, sunset: dailyForecast.sunset), timezone: 0, id: 0, name: "", cod: 0)
+                        newForecast = Forecast(value: [Coord(value: [0,0]),
+                                                       dailyForecast.weather,
+                                                       "",
+                                                       Stats(value: [dailyForecast.temp?.day ?? Temp().day,
+                                                                     dailyForecast.feelsLike?.day ?? FeelsLike().day,
+                                                                     dailyForecast.temp?.min ?? Temp().min,
+                                                                     dailyForecast.temp?.max ?? Temp().max,
+                                                                     dailyForecast.pressure,
+                                                                     dailyForecast.humidity]),
+                                                       0,
+                                                       Wind(value: [dailyForecast.windSpeed,
+                                                            dailyForecast.windDeg]),
+                                                       Clouds(value: [dailyForecast.clouds]),
+                                                       dailyForecast.dt,
+                                                       Sys(value: [0, 0, "", dailyForecast.sunrise, dailyForecast.sunset]),
+                                                       0,
+                                                       0,
+                                                       "",
+                                                       0])
                     }
                 }
                 forecast.hourly.forEach { (hourlyForecast) in
@@ -85,7 +103,7 @@ class MainViewModel {
                     let date1 = Date(timeIntervalSince1970: TimeInterval(hourlyForecast.dt))
                     let date2 = Date(timeIntervalSince1970: TimeInterval(forecast.dt))
                     if date1.isDay(of: date2) {
-//                        newForecast?.hourlyForecast?.append(hourlyForecast)
+                        newForecast?.hourlyForecast.append(hourlyForecast)
                     }
                 }
                 if let forecast = newForecast {

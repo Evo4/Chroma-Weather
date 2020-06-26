@@ -113,21 +113,24 @@ class NextWeekForecastCell: UICollectionViewCell {
         forecast.asObservable()
             .observeOn(MainScheduler.instance)
             .map {
-                return $0.temp.day.toCelsius()
+                let temp = $0.temp ?? Temp()
+                return temp.day.toCelsius()
             }.bind(to: dayTemperatureLabel.rx.text)
             .disposed(by: disposeBag)
         
         forecast.asObservable()
         .observeOn(MainScheduler.instance)
         .map {
-            return $0.temp.min.toCelsius()
+            let temp = $0.temp ?? Temp()
+            return temp.min.toCelsius()
         }.bind(to: minTemperatureLabel.rx.text)
         .disposed(by: disposeBag)
         
         forecast.asObservable()
         .observeOn(MainScheduler.instance)
         .map {
-            return $0.temp.max.toCelsius()
+            let temp = $0.temp ?? Temp()
+            return temp.max.toCelsius()
         }.bind(to: maxTemperatureLabel.rx.text)
         .disposed(by: disposeBag)
         

@@ -31,6 +31,7 @@ class APIProvider {
     func getOneCallForecast(location: CLLocation, completion: @escaping ((ServerResult<OneCallForecast,Void>)->())) {
         guard let url = URL(string: "https://api.openweathermap.org/data/2.5/onecall?lat=\(location.coordinate.latitude)&lon=\(location.coordinate.longitude)&%20exclude=daily&appid=\(Settings.shared.openWeatherAPIKey)") else {return}
         AF.request(url, method: .get).responseDecodable(of: OneCallForecast.self) { (response) in
+            print("response: \(response)")
             switch response.result {
             case .success(let forecast):
                 completion(.success(forecast))
