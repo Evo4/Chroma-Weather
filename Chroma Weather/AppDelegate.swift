@@ -31,6 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         
         ApplicationDelegate.shared.application( application, didFinishLaunchingWithOptions: launchOptions )
         
+        application.setMinimumBackgroundFetchInterval(3600)
         
         if #available(iOS 13.0, *) {
         } else {
@@ -48,6 +49,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         return true
     }
 
+    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        if application.backgroundRefreshStatus == .available && application.applicationState == .background {
+            NotificationService.shared.setupNotification()
+            completionHandler(.newData)
+        } else {
+            completionHandler(.noData)
+        }
+    }
+    
     // MARK: UISceneSession Lifecycle
 
     @available(iOS 13.0, *)

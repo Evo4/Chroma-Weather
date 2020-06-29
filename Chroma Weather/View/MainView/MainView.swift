@@ -109,7 +109,6 @@ class MainView: UIViewController {
         setupSideMenu()
         
         NotificationService.shared.initNotifications()
-        UIApplication.shared.applicationIconBadgeNumber = 0
         Settings.shared.serializeBangeCounter(badge: NSNumber(value: 1))
         
         forecastTypeCollectionView.forecastTypeCallback = { [weak self] type in
@@ -168,6 +167,11 @@ class MainView: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         mainViewModel.isSideMenuHidden.onNext(true)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        UIApplication.shared.applicationIconBadgeNumber = 0
     }
     
     fileprivate func setupConstraints() {
