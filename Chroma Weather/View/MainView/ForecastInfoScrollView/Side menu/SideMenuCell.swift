@@ -60,7 +60,11 @@ class SideMenuCell: UITableViewCell {
             .tap
             .subscribe(onNext: { [weak self] in
                 if self?.index == 0 {
-                    
+                    let mapView = MapView()
+                    let navController = UINavigationController(rootViewController: mapView)
+                    navController.modalPresentationStyle = .fullScreen
+                    let rootViewController = UIApplication.shared.keyWindow?.rootViewController
+                    rootViewController?.present(navController, animated: true, completion: nil)
                 } else if self?.index == 1 {
                     if let googleAuth = GIDSignIn.sharedInstance()?.hasPreviousSignIn(), googleAuth {
                         GIDSignIn.sharedInstance()?.signOut()
