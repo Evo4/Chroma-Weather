@@ -14,6 +14,9 @@ import RxCocoa
 import GooglePlaces
 import RealmSwift
 import RxRealm
+import GoogleSignIn
+import FBSDKLoginKit
+import FBSDKCoreKit
 
 class MainView: UIViewController {
 
@@ -77,6 +80,22 @@ class MainView: UIViewController {
         return view
     }()
     
+    private lazy var sideMenuBackView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.35)
+        view.alpha = 0
+        return view
+    }()
+    
+    private lazy var sideMenuView: SideMenuView = {
+        let view = SideMenuView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    var sideMenuLeftAnchor: NSLayoutConstraint!
+    var sideMenuRightAnchor: NSLayoutConstraint!
+    
     private let mainViewModel = MainViewModel()
     let locationManager = CLLocationManager()
     private let disposeBag = DisposeBag()
@@ -85,11 +104,13 @@ class MainView: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         setupConstraints()
-        setupLocation()
-        
         setupRealmBinding()
-        
         setupForecast()
+        setupSideMenu()
+        
+        NotificationService.shared.initNotifications()
+        UIApplication.shared.applicationIconBadgeNumber = 0
+        Settings.shared.serializeBangeCounter(badge: NSNumber(value: 1))
         
         forecastTypeCollectionView.forecastTypeCallback = { [weak self] type in
             switch type {
@@ -137,12 +158,26 @@ class MainView: UIViewController {
                 // Display the autocomplete view controller.
                 self?.present(autocompleteController, animated: true, completion: nil)
             }).disposed(by: disposeBag)
+        
+        menuButton.rx.tap
+            .bind(onNext: { [weak self] in
+                self?.mainViewModel.isSideMenuHidden.onNext(false)
+            }).disposed(by: disposeBag)
     }
     
-    func setupConstraints() {
-        [locationLabel, searchButton, menuButton, forecastTypeCollectionView, currentWeatherView, tomorrowWeatherView, nextWeekForecastView].forEach { (subview) in
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        mainViewModel.isSideMenuHidden.onNext(true)
+    }
+    
+    fileprivate func setupConstraints() {
+        [locationLabel, searchButton, menuButton, forecastTypeCollectionView, currentWeatherView, tomorrowWeatherView, nextWeekForecastView, sideMenuBackView, sideMenuView].forEach { (subview) in
             view.addSubview(subview)
         }
+        
+        sideMenuLeftAnchor = sideMenuView.leftAnchor.constraint(equalTo: view.leftAnchor)
+        sideMenuRightAnchor = sideMenuView.rightAnchor.constraint(equalTo: view.leftAnchor)
+        
         NSLayoutConstraint.activate([
             locationLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             locationLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
@@ -179,7 +214,79 @@ class MainView: UIViewController {
             nextWeekForecastView.leftAnchor.constraint(equalTo: view.leftAnchor),
             nextWeekForecastView.rightAnchor.constraint(equalTo: view.rightAnchor),
             nextWeekForecastView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.7),
+            
+            sideMenuBackView.topAnchor.constraint(equalTo: view.topAnchor),
+            sideMenuBackView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            sideMenuBackView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            sideMenuBackView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            sideMenuView.topAnchor.constraint(equalTo: sideMenuBackView.topAnchor),
+            sideMenuRightAnchor!,
+            sideMenuView.bottomAnchor.constraint(equalTo: sideMenuBackView.bottomAnchor),
+            sideMenuView.widthAnchor.constraint(equalTo: sideMenuBackView.widthAnchor, multiplier: 0.7),
         ])
+    }
+    
+    fileprivate func setupSideMenu() {
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(closeSideMenu))
+        sideMenuBackView.addGestureRecognizer(gesture)
+        
+        let leftGesture = UIPanGestureRecognizer(target: self, action: #selector(sideMenuGesture(sender:)))
+        sideMenuView.addGestureRecognizer(leftGesture)
+        
+        mainViewModel.isSideMenuHidden.asObservable()
+            .observeOn(MainScheduler.instance)
+            .startWith(true)
+            .subscribe(onNext: { [weak self] isSideMenuHidden in
+                switch isSideMenuHidden {
+                case true:
+                    UIView.animate(withDuration: 0.3) { [weak self] in
+                        self?.sideMenuLeftAnchor.isActive = false
+                        self?.sideMenuRightAnchor.isActive = true
+                        self?.sideMenuBackView.alpha = 0
+                        self?.view.layoutIfNeeded()
+                    }
+                case false:
+                    UIView.animate(withDuration: 0.3) { [weak self] in
+                        self?.sideMenuRightAnchor.isActive = false
+                        self?.sideMenuLeftAnchor.isActive = true
+                        self?.sideMenuBackView.alpha = 1
+                        self?.view.layoutIfNeeded()
+                    }
+                }
+            }).disposed(by: disposeBag)
+    }
+    
+    @objc fileprivate func closeSideMenu() {
+        mainViewModel.isSideMenuHidden.onNext(true)
+    }
+    
+    @objc fileprivate func sideMenuGesture(sender: UIPanGestureRecognizer) {
+        let pos = sender.translation(in: sideMenuView)
+        let velocity = sender.velocity(in: sideMenuView)
+        let constant = pos.x
+        if constant <= 0 {
+            sideMenuLeftAnchor.constant = constant
+        }
+        if sender.state == UIPanGestureRecognizer.State.ended {
+            if constant >= -105 {
+                if velocity.x <= -650 {
+                    sideMenuLeftAnchor.constant = 0
+                    mainViewModel.isSideMenuHidden.onNext(true)
+                    return
+                }
+                UIView.animate(withDuration: 0.3) { [weak self] in
+                    self?.sideMenuLeftAnchor.constant = 0
+                    self?.view.layoutIfNeeded()
+                }
+                return
+            }
+            if constant <= 105 {
+                sideMenuLeftAnchor.constant = 0
+                mainViewModel.isSideMenuHidden.onNext(true)
+                return
+            }
+        }
     }
     
     fileprivate func setupRealmBinding() {
@@ -194,13 +301,6 @@ class MainView: UIViewController {
             }
         }
         
-        locationManager.rx
-            .didChangeAuthorization
-            .subscribe(onNext: { [weak self] _, status in
-//                self?.mainViewModel.configureLocation(status: status, manager: self!.locationManager)
-            })
-            .disposed(by: disposeBag)
-        
         Observable.arrayWithChangeset(from: mainViewModel.realmLocations)
             .subscribe(onNext: { [weak self] array, changes in
                 let location = CLLocation(latitude: array[0].latitude, longitude: array[0].longitude)
@@ -212,12 +312,6 @@ class MainView: UIViewController {
             }).disposed(by: disposeBag)
     }
     
-    fileprivate func setupLocation() {
-//        locationManager.requestAlwaysAuthorization()
-//        locationManager.startUpdatingLocation()
-//        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-    }
-    
     fileprivate func setupForecast() {
         let location = CLLocation(latitude: mainViewModel.realmLocations[0].latitude, longitude: mainViewModel.realmLocations[0].longitude)
         
@@ -227,11 +321,10 @@ class MainView: UIViewController {
             .observeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] (location) in
                 APIProvider.shared.getCurrentForecast(location: location) { (result) in
-                    switch result {
+                switch result {
                     case .success(let forecast):
                         self?.mainViewModel.currentForecast.asObserver().onNext(forecast)
                         self?.currentWeatherView.forecastInfoAlpha = 1
-//                        print("location: \(location)")
                         break
                     case .failure(()):
                         break
@@ -245,7 +338,7 @@ class MainView: UIViewController {
             .observeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] (location) in
                 APIProvider.shared.getOneCallForecast(location: location) { (result) in
-                    switch result {
+                switch result {
                     case .success(let forecast):
                         self?.mainViewModel.oneCallForecast.asObserver().onNext(forecast)
                         self?.tomorrowWeatherView.forecastInfoAlpha = 1
@@ -312,7 +405,7 @@ class MainView: UIViewController {
             .disposed(by: disposeBag)
     }
     
-    func getCoordinateFrom(address: String, completion: @escaping(_ coordinate: CLLocationCoordinate2D?, _ error: Error?) -> () ) {
+    fileprivate func getCoordinateFrom(address: String, completion: @escaping(_ coordinate: CLLocationCoordinate2D?, _ error: Error?) -> () ) {
         CLGeocoder().geocodeAddressString(address) { completion($0?.first?.location?.coordinate, $1) }
     }
 }
@@ -328,11 +421,6 @@ extension MainView: GMSAutocompleteViewControllerDelegate {
         try! self?.mainViewModel.realm.write {
             locations[0].latitude = coordinate.latitude
             locations[0].longitude = coordinate.longitude
-        }
-        
-//        self?.mainViewModel.location.asObserver().onNext(CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude))
-        DispatchQueue.main.async {
-            print(place.name ?? "", "Location:", coordinate)
         }
 
     }

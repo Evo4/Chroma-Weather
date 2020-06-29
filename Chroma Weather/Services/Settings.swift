@@ -36,6 +36,10 @@ class Settings {
         return deserializeCurrentForecast()
     }
     
+    var badgeCounter: NSNumber {
+        return deserilizeBadgeCounter()
+    }
+    
     private init() {    }
     
     func serializeUserIdToken(token: String?) {
@@ -68,5 +72,15 @@ class Settings {
         return lang
     }
     
+    func serializeBangeCounter(badge: NSNumber) {
+        defs.set(badge, forKey: "badge")
+    }
     
+    private func deserilizeBadgeCounter()->NSNumber {
+        if let badge = defs.object(forKey: "badge") {
+            return (badge as? NSNumber)!
+        } else {
+            return NSNumber(value: 1)
+        }
+    }
 }

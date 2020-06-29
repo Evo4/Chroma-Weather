@@ -195,7 +195,7 @@ enum Main: String, Codable {
         
         clouds = try container.decode(Int.self, forKey: .clouds)
         rain = try container.decodeIfPresent(Double.self, forKey: .rain)
-        uvi = try container.decode(Double.self, forKey: .uvi)
+        uvi = try container.decodeIfPresent(Double.self, forKey: .uvi)
     }
 }
 

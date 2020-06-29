@@ -43,6 +43,8 @@ class MainViewModel {
     
     let forecastTypes = PublishSubject<[ForecastType]>()
     
+    let isSideMenuHidden = PublishSubject<Bool>()
+    
     func getLocationName()->Observable<String> {
         return Observable.create { [weak self] (observable) -> Disposable in
             var disposeBag: DisposeBag! = DisposeBag()
