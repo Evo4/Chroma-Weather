@@ -59,7 +59,7 @@ class MainViewModel {
                     placemarks?.forEach({ (placemark) in
                         if let city = placemark.locality, let country = placemark.country {
                             let locationName = "\(city), \(country)"
-//                            Settings.shared.serializeLocationName(of: locationName)
+                            Settings.shared.serializeLocationName(of: locationName)
                             observable.onNext(locationName)
                         }
                     })
@@ -109,6 +109,7 @@ class MainViewModel {
                     }
                 }
                 if let forecast = newForecast {
+                    forecast.forecastType = "tomorrow"
                     observable.onNext(forecast)
                 }
                 }).disposed(by: disposeBag)

@@ -48,6 +48,7 @@ class APIProvider {
         AF.request(url, method: .get).responseDecodable(of: Forecast.self) { (response) in
             switch response.result {
             case .success(let forecast):
+                forecast.forecastType = "today"
                 completion(.success(forecast))
                 break
             case .failure(_):

@@ -354,24 +354,16 @@ class MainView: UIViewController {
             }).disposed(by: disposeBag)
         
         mainViewModel.getLocationName()
+            .startWith(Settings.shared.locationName ?? "")
             .observeOn(MainScheduler.instance)
             .bind(to: locationLabel.rx.text)
             .disposed(by: disposeBag)
         
-        if let forecast = Settings.shared.currentForecast {
-            mainViewModel.currentForecast
-                .asObservable()
-                .observeOn(MainScheduler.instance)
-                .startWith(forecast)
-                .bind(to: currentWeatherView.currentForecast)
-                .disposed(by: disposeBag)
-        } else {
-            mainViewModel.currentForecast
-                .asObservable()
-                .observeOn(MainScheduler.instance)
-                .bind(to: currentWeatherView.currentForecast)
-                .disposed(by: disposeBag)
-        }
+        mainViewModel.currentForecast
+            .asObservable()
+            .observeOn(MainScheduler.instance)
+            .bind(to: currentWeatherView.currentForecast)
+            .disposed(by: disposeBag)
         
         mainViewModel.forecastTypes.asObservable()
             .startWith([
@@ -384,9 +376,9 @@ class MainView: UIViewController {
             .disposed(by: disposeBag)
         
         mainViewModel.todayHourlyForecast
-        .observeOn(MainScheduler.instance)
-        .bind(to: currentWeatherView.hourlyForecasts.asObserver())
-        .disposed(by: disposeBag)
+            .observeOn(MainScheduler.instance)
+            .bind(to: currentWeatherView.hourlyForecasts.asObserver())
+            .disposed(by: disposeBag)
         
         mainViewModel.tomorrowForecast
             .observeOn(MainScheduler.instance)

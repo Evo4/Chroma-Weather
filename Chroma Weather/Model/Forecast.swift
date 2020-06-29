@@ -26,6 +26,11 @@ import RxRealm
     var name: String = ""
     var cod: Int = 0
     var hourlyForecast = List<HourlyForecast>()
+    var forecastType: String = ""
+    
+    override class func primaryKey() -> String? {
+        return "forecastType"
+    }
     
     enum CodingKeys: String, CodingKey {
         case coord
@@ -42,6 +47,7 @@ import RxRealm
         case name
         case cod
         case hourlyForecast
+        case forecastType
     }
     
     public required convenience init(from decoder: Decoder) throws
@@ -67,7 +73,8 @@ import RxRealm
         
         let forecasts = try container.decodeIfPresent([HourlyForecast].self, forKey: .hourlyForecast) ?? [HourlyForecast()]
         hourlyForecast.append(objectsIn: forecasts)
-
+        
+        forecastType = try container.decodeIfPresent(String.self, forKey: .forecastType) ?? ""
     }
 }
 

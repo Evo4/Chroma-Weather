@@ -24,16 +24,16 @@ class Settings {
         return "ae23d67b60e778a5f2e70166f6953419"
     }
     
-    var currentForecast: Forecast? {
-        return deserializeCurrentForecast()
-    }
-    
     var badgeCounter: NSNumber {
         return deserilizeBadgeCounter()
     }
     
     var locationStatus: Int32? {
         return deserializeLocationStatus()?.status
+    }
+    
+    var locationName: String? {
+        return deserializeLocationName()
     }
     
     private init() {    }
@@ -45,18 +45,6 @@ class Settings {
     private func deserializeUserIdToken()-> String? {
         let token = defs.string(forKey: "idToken")
         return token
-    }
-    
-    func serializeCurrentForecast(currentForecast: Forecast) {
-        defs.set(try? PropertyListEncoder().encode(currentForecast), forKey: "currentForecast")
-    }
-    
-    private func deserializeCurrentForecast() -> Forecast? {
-        guard let data = defs.object(forKey: "currentForecast") as? Data,
-            let lang = try? PropertyListDecoder().decode(Forecast.self, from: data) else {
-                return nil
-        }
-        return lang
     }
     
     func serializeBangeCounter(badge: NSNumber) {
@@ -81,5 +69,14 @@ class Settings {
                 return nil
         }
         return status
+    }
+    
+    func serializeLocationName(of: String) {
+        defs.string(forKey: "locationName")
+    }
+    
+    private func deserializeLocationName()->String? {
+        let name = defs.string(forKey: "locationName")
+        return name
     }
 }
