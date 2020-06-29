@@ -10,6 +10,8 @@ import UIKit
 import RxCocoa
 import RxSwift
 import FBSDKLoginKit
+import GoogleSignIn
+import FBSDKCoreKit
 
 class SideMenuCell: UITableViewCell {
 
@@ -60,7 +62,18 @@ class SideMenuCell: UITableViewCell {
                 if self?.index == 0 {
                     
                 } else if self?.index == 1 {
+                    if let googleAuth = GIDSignIn.sharedInstance()?.hasPreviousSignIn(), googleAuth {
+                        GIDSignIn.sharedInstance()?.signOut()
+                    } else if let _ = AccessToken.current {
+                        LoginManager().logOut()
+                    }
+                    let signInView = SignInView()
+                    signInView.modalPresentationStyle = .fullScreen
+                    let rootViewController = UIApplication.shared.keyWindow?.rootViewController
+                    UIApplication.shared.keyWindow?.rootViewController = signInView
+                    rootViewController?.present(signInView, animated: true, completion: nil)
                     
+                    Settings.shared.serializeUserIdToken(token: nil)
                 }
             }).disposed(by: disposeBag)
     }

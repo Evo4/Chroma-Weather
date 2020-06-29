@@ -24,6 +24,7 @@
 		114FB0DC249D03F1003CC3FD /* OpenSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 114FB0DA249D03F1003CC3FD /* OpenSans-Regular.ttf */; };
 		114FB0DD249D03F1003CC3FD /* OpenSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 114FB0DB249D03F1003CC3FD /* OpenSans-Bold.ttf */; };
 		11746BA024A96EC9003CD8F6 /* SideMenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11746B9F24A96EC9003CD8F6 /* SideMenuItem.swift */; };
+		11746BA224A97EFE003CD8F6 /* LocationStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11746BA124A97EFE003CD8F6 /* LocationStatus.swift */; };
 		117C7D81249D1024007AF7F2 /* WeatherInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117C7D80249D1024007AF7F2 /* WeatherInfoView.swift */; };
 		117C7D83249D12AE007AF7F2 /* ForecastTypeCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117C7D82249D12AE007AF7F2 /* ForecastTypeCollectionView.swift */; };
 		118BC3D224A38F6700F7371E /* RealmLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118BC3D124A38F6700F7371E /* RealmLocation.swift */; };
@@ -67,6 +68,7 @@
 		114FB0DA249D03F1003CC3FD /* OpenSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Regular.ttf"; sourceTree = "<group>"; };
 		114FB0DB249D03F1003CC3FD /* OpenSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Bold.ttf"; sourceTree = "<group>"; };
 		11746B9F24A96EC9003CD8F6 /* SideMenuItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuItem.swift; sourceTree = "<group>"; };
+		11746BA124A97EFE003CD8F6 /* LocationStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationStatus.swift; sourceTree = "<group>"; };
 		117C7D80249D1024007AF7F2 /* WeatherInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherInfoView.swift; sourceTree = "<group>"; };
 		117C7D82249D12AE007AF7F2 /* ForecastTypeCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastTypeCollectionView.swift; sourceTree = "<group>"; };
 		118BC3D124A38F6700F7371E /* RealmLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmLocation.swift; sourceTree = "<group>"; };
@@ -167,6 +169,7 @@
 				11A6D44C249D7D8C0081CE48 /* OneCallForecast.swift */,
 				1142E4CD249E351600B8185B /* Forecast.swift */,
 				11746B9F24A96EC9003CD8F6 /* SideMenuItem.swift */,
+				11746BA124A97EFE003CD8F6 /* LocationStatus.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -425,6 +428,7 @@
 				1115D7D924A28542008737B9 /* DailyForecastInfoScrollView.swift in Sources */,
 				11746BA024A96EC9003CD8F6 /* SideMenuItem.swift in Sources */,
 				11B040AD24A1047100B7A47F /* HourlyForecastCell.swift in Sources */,
+				11746BA224A97EFE003CD8F6 /* LocationStatus.swift in Sources */,
 				1142E4D0249E6E4100B8185B /* Extensions.swift in Sources */,
 				11B040A924A0F4BC00B7A47F /* HourlyForecastView.swift in Sources */,
 			);

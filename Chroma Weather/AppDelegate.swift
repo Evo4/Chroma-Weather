@@ -84,14 +84,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         Settings.shared.serializeUserIdToken(token: idToken)
         if let _ = idToken {
             
+            if let statusInt32 = Settings.shared.locationStatus, let status = CLAuthorizationStatus(rawValue: statusInt32) {
+                mainViewModel.configureLocation(status: status) {
+                    self.mainViewModel.configureLocation(status: status, completion: {
+                        let mainView = MainView()
+                        mainView.modalPresentationStyle = .fullScreen
+                        let rootViewController = UIApplication.shared.keyWindow?.rootViewController
+                        UIApplication.shared.keyWindow?.rootViewController = mainView
+                        rootViewController?.present(mainView, animated: true, completion: nil)
+                    })
+                }
+            }
+            
             mainViewModel.configureLocationManager()
             mainViewModel.locationManager.rx
                 .didChangeAuthorization
                 .subscribe(onNext: { [weak self] _, status in
+                    Settings.shared.serializeLocationStatus(status: LocationStatus(status: status.rawValue))
                     self?.mainViewModel.configureLocation(status: status, completion: {
                         let mainView = MainView()
                         mainView.modalPresentationStyle = .fullScreen
                         let rootViewController = UIApplication.shared.keyWindow?.rootViewController
+                        UIApplication.shared.keyWindow?.rootViewController = mainView
                         rootViewController?.present(mainView, animated: true, completion: nil)
                     })
                 })
