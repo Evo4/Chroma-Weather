@@ -56,9 +56,7 @@ class NotificationService {
                 Feels like: \(feelsLike)C
                 Pressure: \(pressure)hPa
                 """
-                DispatchQueue.main.async {
-                    self.scheduleNotification(title: title, body: body)
-                }
+                self.scheduleNotification(title: title, body: body)
                 break
             case .failure(()):
                 break

@@ -102,7 +102,7 @@ class DetailForecastView: UIViewController {
         ])
     }
     
-    @objc func closeViewAction(sender: UIButton) {
+    @objc fileprivate func closeViewAction(sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
     }
 }

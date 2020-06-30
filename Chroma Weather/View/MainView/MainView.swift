@@ -111,6 +111,7 @@ class MainView: UIViewController {
         NotificationService.shared.initNotifications()
         Settings.shared.serializeBangeCounter(badge: NSNumber(value: 1))
         
+        
         forecastTypeCollectionView.forecastTypeCallback = { [weak self] type in
             switch type {
             case 0:
@@ -139,6 +140,7 @@ class MainView: UIViewController {
             }
         }
         
+        // open cities search view
         searchButton.rx.tap
             .bind(onNext: { [weak self] in
                 let autocompleteController = GMSAutocompleteViewController()
@@ -158,6 +160,7 @@ class MainView: UIViewController {
                 self?.present(autocompleteController, animated: true, completion: nil)
             }).disposed(by: disposeBag)
         
+        // open side menu
         menuButton.rx.tap
             .bind(onNext: { [weak self] in
                 self?.mainViewModel.isSideMenuHidden.onNext(false)
@@ -294,6 +297,7 @@ class MainView: UIViewController {
     }
     
     fileprivate func setupRealmBinding() {
+        
         if mainViewModel.realmLocations.count == 0 {
             let location = locationManager.location ?? CLLocation(latitude: 47.858176, longitude: 35.103274)
             let realmLocation = RealmLocation()
@@ -319,6 +323,7 @@ class MainView: UIViewController {
     fileprivate func setupForecast() {
         let location = CLLocation(latitude: mainViewModel.realmLocations[0].latitude, longitude: mainViewModel.realmLocations[0].longitude)
         
+        // get today forecast from API
         mainViewModel.location
             .asObservable()
             .startWith(location)
@@ -336,6 +341,7 @@ class MainView: UIViewController {
                 }
             }).disposed(by: disposeBag)
         
+        // get current weather, minute forecast for 1 hour, hourly forecast for 48 hours and daily forecast for 7 days from API
         mainViewModel.location
             .asObservable()
             .startWith(location)

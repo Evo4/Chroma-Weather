@@ -83,7 +83,17 @@ class SignInView: UIViewController {
         ])
     }
     
-    
+    fileprivate func presentMainView(status: CLAuthorizationStatus) {
+        mainViewModel.configureLocation(status: status) {
+            self.mainViewModel.configureLocation(status: status, completion: {
+                let mainView = MainView()
+                mainView.modalPresentationStyle = .fullScreen
+                let rootViewController = UIApplication.shared.keyWindow?.rootViewController
+                UIApplication.shared.keyWindow?.rootViewController = mainView
+                rootViewController?.present(mainView, animated: true, completion: nil)
+            })
+        }
+    }
 }
 
 extension SignInView: LoginButtonDelegate {
@@ -93,15 +103,7 @@ extension SignInView: LoginButtonDelegate {
         Settings.shared.serializeUserIdToken(token: accessToken.tokenString)
         
         if let statusInt32 = Settings.shared.locationStatus, let status = CLAuthorizationStatus(rawValue: statusInt32) {
-            mainViewModel.configureLocation(status: status) {
-                self.mainViewModel.configureLocation(status: status, completion: {
-                    let mainView = MainView()
-                    mainView.modalPresentationStyle = .fullScreen
-                    let rootViewController = UIApplication.shared.keyWindow?.rootViewController
-                    UIApplication.shared.keyWindow?.rootViewController = mainView
-                    rootViewController?.present(mainView, animated: true, completion: nil)
-                })
-            }
+            presentMainView(status: status)
         }
         
         mainViewModel.configureLocationManager()
@@ -109,13 +111,7 @@ extension SignInView: LoginButtonDelegate {
             .didChangeAuthorization
             .subscribe(onNext: { [weak self] _, status in
                 Settings.shared.serializeLocationStatus(status: LocationStatus(status: status.rawValue))
-                self?.mainViewModel.configureLocation(status: status, completion: {
-                    let mainView = MainView()
-                    mainView.modalPresentationStyle = .fullScreen
-                    let rootViewController = UIApplication.shared.keyWindow?.rootViewController
-                    UIApplication.shared.keyWindow?.rootViewController = mainView
-                    rootViewController?.present(mainView, animated: true, completion: nil)
-                })
+                self?.presentMainView(status: status)
             })
             .disposed(by: disposeBag)
     }

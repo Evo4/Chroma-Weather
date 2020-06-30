@@ -50,7 +50,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
     }
 
     func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        if application.backgroundRefreshStatus == .available && application.applicationState == .background {
+        if application.backgroundRefreshStatus == .available && (application.applicationState == .background || application.applicationState == .inactive) {
             NotificationService.shared.setupNotification()
             completionHandler(.newData)
         } else {
@@ -95,15 +95,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         if let _ = idToken {
             
             if let statusInt32 = Settings.shared.locationStatus, let status = CLAuthorizationStatus(rawValue: statusInt32) {
-                mainViewModel.configureLocation(status: status) {
-                    self.mainViewModel.configureLocation(status: status, completion: {
-                        let mainView = MainView()
-                        mainView.modalPresentationStyle = .fullScreen
-                        let rootViewController = UIApplication.shared.keyWindow?.rootViewController
-                        UIApplication.shared.keyWindow?.rootViewController = mainView
-                        rootViewController?.present(mainView, animated: true, completion: nil)
-                    })
-                }
+                presentMainView(status: status)
             }
             
             mainViewModel.configureLocationManager()
@@ -111,13 +103,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
                 .didChangeAuthorization
                 .subscribe(onNext: { [weak self] _, status in
                     Settings.shared.serializeLocationStatus(status: LocationStatus(status: status.rawValue))
-                    self?.mainViewModel.configureLocation(status: status, completion: {
-                        let mainView = MainView()
-                        mainView.modalPresentationStyle = .fullScreen
-                        let rootViewController = UIApplication.shared.keyWindow?.rootViewController
-                        UIApplication.shared.keyWindow?.rootViewController = mainView
-                        rootViewController?.present(mainView, animated: true, completion: nil)
-                    })
+                    self?.presentMainView(status: status)
                 })
                 .disposed(by: disposeBag)
         }
@@ -127,6 +113,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
               withError error: Error!) {
       // Perform any operations when the user disconnects from app here.
       // ...
+    }
+    
+    fileprivate func presentMainView(status: CLAuthorizationStatus) {
+        mainViewModel.configureLocation(status: status) {
+            self.mainViewModel.configureLocation(status: status, completion: {
+                let mainView = MainView()
+                mainView.modalPresentationStyle = .fullScreen
+                let rootViewController = UIApplication.shared.keyWindow?.rootViewController
+                UIApplication.shared.keyWindow?.rootViewController = mainView
+                rootViewController?.present(mainView, animated: true, completion: nil)
+            })
+        }
     }
 }
 

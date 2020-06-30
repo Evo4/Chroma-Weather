@@ -14,6 +14,7 @@ import RxCoreLocation
 import AFDateHelper
 import RxRealm
 import RealmSwift
+import WeatherAPIKit
 
 class MainViewModel {
     let locationManager = CLLocationManager()
