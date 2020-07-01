@@ -9,6 +9,10 @@
 import Foundation
 import CoreLocation
 
-struct LocationStatus: Codable {
-    var status: Int32
+public struct LocationStatus: Codable {
+    public var status: Int32
+    
+    public init(status: Int32) {
+        self.status = status
+    }
 }

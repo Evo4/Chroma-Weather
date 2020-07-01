@@ -8,12 +8,16 @@
 
 import Foundation
 
-struct ForecastType {
-    let type: DayType
+public struct ForecastType {
+    public let type: DayType
     
-    enum DayType: String {
+    public enum DayType: String {
         case today = "Today"
         case tomorrow = "Tomorrow"
         case nextWeek = "Next 7 Days"
+    }
+    
+    public init(type: DayType) {
+        self.type = type
     }
 }

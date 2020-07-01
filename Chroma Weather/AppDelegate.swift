@@ -13,6 +13,7 @@ import GooglePlaces
 import GoogleMaps
 import RxCocoa
 import RxSwift
+import WeatherAPIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {

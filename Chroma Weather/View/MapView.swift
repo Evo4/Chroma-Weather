@@ -11,6 +11,7 @@ import RxGoogleMaps
 import GoogleMaps
 import RxCocoa
 import RxSwift
+import WeatherAPIKit
 
 class MapView: UIViewController {
 

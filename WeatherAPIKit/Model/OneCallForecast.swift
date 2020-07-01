@@ -11,16 +11,16 @@ import RealmSwift
 import RxRealm
 
 // MARK: - Forecast
-@objcMembers class OneCallForecast: Object, Codable {
-    var lat: Double = 0.0
-    var lon: Double = 0.0
-    var timezone: String = ""
-    var timezoneOffset: Int = 0
-    var current: Current? = nil
-    var hourly = List<HourlyForecast>()
-    var daily = List<DailyForecast>()
+@objcMembers public class OneCallForecast: Object, Codable {
+    public var lat: Double = 0.0
+    public var lon: Double = 0.0
+    public var timezone: String = ""
+    public var timezoneOffset: Int = 0
+    public var current: Current? = nil
+    public var hourly = List<HourlyForecast>()
+    public var daily = List<DailyForecast>()
 
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case lat
         case lon
         case timezone
@@ -49,24 +49,24 @@ import RxRealm
 }
 
 // MARK: - Current
-@objcMembers class Current: Object, Codable {
-    var dt: Int = 0
-    var sunrise: Int = 0
-    var sunset: Int = 0
-    var temp: Double? = nil
-    var feelsLike: Double = 0.0
-    var pressure: Int = 0
-    var humidity: Int = 0
-    var dewPoint: Double = 0.0
-    var uvi: Double = 0.0
-    var clouds: Int = 0
-    var visibility: Int = 0
-    var windDeg: Int = 0
-    var windSpeed: Double = 0.0
-    var weather = List<Weather>()
-    var rain: Rain? = nil
+@objcMembers public class Current: Object, Codable {
+    public var dt: Int = 0
+    public var sunrise: Int = 0
+    public var sunset: Int = 0
+    public var temp: Double? = nil
+    public var feelsLike: Double = 0.0
+    public var pressure: Int = 0
+    public var humidity: Int = 0
+    public var dewPoint: Double = 0.0
+    public var uvi: Double = 0.0
+    public var clouds: Int = 0
+    public var visibility: Int = 0
+    public var windDeg: Int = 0
+    public var windSpeed: Double = 0.0
+    public var weather = List<Weather>()
+    public var rain: Rain? = nil
 
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case dt, sunrise, sunset, temp
         case feelsLike = "feels_like"
         case pressure, humidity
@@ -103,10 +103,10 @@ import RxRealm
 }
 
 // MARK: - Rain
-@objcMembers class Rain: Object, Codable {
-    var the1H: Double = 0.0
+@objcMembers public class Rain: Object, Codable {
+    public var the1H: Double = 0.0
 
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case the1H = "1h"
     }
     
@@ -119,13 +119,13 @@ import RxRealm
 }
 
 // MARK: - Weather
-@objcMembers class Weather: Object, Codable {
-    var id: Int = 0
-    var main: String = ""
-    var weatherDescription: String = ""
-    var icon: String = ""
+@objcMembers public class Weather: Object, Codable {
+    public var id: Int = 0
+    public var main: String = ""
+    public var weatherDescription: String = ""
+    public var icon: String = ""
 
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case id, main
         case weatherDescription = "description"
         case icon
@@ -142,30 +142,30 @@ import RxRealm
     }
 }
 
-enum Main: String, Codable {
+public enum Main: String, Codable {
     case clear = "Clear"
     case clouds = "Clouds"
     case rain = "Rain"
 }
 
 // MARK: - Daily
-@objcMembers class DailyForecast: Object, Codable {
-    var dt: Int = 0
-    var sunrise: Int = 0
-    var sunset: Int = 0
-    var temp: Temp? = nil
-    var feelsLike: FeelsLike? = nil
-    var pressure: Int = 0
-    var humidity: Int = 0
-    var dewPoint: Double = 0.0
-    var windSpeed: Double = 0.0
-    var windDeg: Double = 0.0
-    var weather = List<Weather>()
-    var clouds: Int = 0
-    var rain: Double? = nil
-    var uvi: Double? = nil
+@objcMembers public class DailyForecast: Object, Codable {
+    public var dt: Int = 0
+    public var sunrise: Int = 0
+    public var sunset: Int = 0
+    public var temp: Temp? = nil
+    public var feelsLike: FeelsLike? = nil
+    public var pressure: Int = 0
+    public var humidity: Int = 0
+    public var dewPoint: Double = 0.0
+    public var windSpeed: Double = 0.0
+    public var windDeg: Double = 0.0
+    public var weather = List<Weather>()
+    public var clouds: Int = 0
+    public var rain: Double? = nil
+    public var uvi: Double? = nil
 
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case dt, sunrise, sunset, temp
         case feelsLike = "feels_like"
         case pressure, humidity
@@ -200,13 +200,13 @@ enum Main: String, Codable {
 }
 
 // MARK: - FeelsLike
-@objcMembers class FeelsLike: Object, Codable {
-    var day: Double = 0.0
-    var night: Double = 0.0
-    var eve: Double = 0.0
-    var morn: Double = 0.0
+@objcMembers public class FeelsLike: Object, Codable {
+    public var day: Double = 0.0
+    public var night: Double = 0.0
+    public var eve: Double = 0.0
+    public var morn: Double = 0.0
     
-    enum CodingKeys:String, CodingKey {
+    public enum CodingKeys:String, CodingKey {
         case day, night, eve, morn
     }
     
@@ -222,15 +222,15 @@ enum Main: String, Codable {
 }
 
 // MARK: - Temp
-@objcMembers class Temp: Object, Codable {
-    var day: Double = 0.0
-    var min: Double = 0.0
-    var max: Double = 0.0
-    var night: Double = 0.0
-    var eve: Double = 0.0
-    var morn: Double = 0.0
+@objcMembers public class Temp: Object, Codable {
+    public var day: Double = 0.0
+    public var min: Double = 0.0
+    public var max: Double = 0.0
+    public var night: Double = 0.0
+    public var eve: Double = 0.0
+    public var morn: Double = 0.0
     
-    enum CodingKeys:String, CodingKey {
+    public enum CodingKeys:String, CodingKey {
         case day, min, max, night, eve, morn
     }
     
@@ -248,20 +248,20 @@ enum Main: String, Codable {
 }
 
 // MARK: - Hourly
-@objcMembers class HourlyForecast: Object, Codable {
-    var dt: Int = 0
-    var temp: Double = 0.0
-    var feelsLike: Double = 0.0
-    var pressure: Int = 0
-    var humidity: Int = 0
-    var dewPoint: Double = 0.0
-    var clouds: Int = 0
-    var windSpeed: Double = 0.0
-    var windDeg: Int = 0
-    var weather = List<Weather>()
-    var rain: Rain? = nil
+@objcMembers public class HourlyForecast: Object, Codable {
+    public var dt: Int = 0
+    public var temp: Double = 0.0
+    public var feelsLike: Double = 0.0
+    public var pressure: Int = 0
+    public var humidity: Int = 0
+    public var dewPoint: Double = 0.0
+    public var clouds: Int = 0
+    public var windSpeed: Double = 0.0
+    public var windDeg: Int = 0
+    public var weather = List<Weather>()
+    public var rain: Rain? = nil
 
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case dt, temp
         case feelsLike = "feels_like"
         case pressure, humidity

@@ -9,7 +9,12 @@
 import Foundation
 import UIKit
 
-struct SideMenuItem {
-    var image: UIImage
-    var text: String
+public struct SideMenuItem {
+    public var image: UIImage
+    public var text: String
+    
+    public init(image: UIImage, text: String) {
+        self.image = image
+        self.text = text
+    }
 }

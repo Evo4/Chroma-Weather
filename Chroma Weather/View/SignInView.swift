@@ -13,6 +13,7 @@ import CoreLocation
 import RxCoreLocation
 import RxCocoa
 import RxSwift
+import WeatherAPIKit
 
 class SignInView: UIViewController {
 

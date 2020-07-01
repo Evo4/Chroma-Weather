@@ -11,6 +11,7 @@ import UserNotifications
 import AFDateHelper
 import RealmSwift
 import CoreLocation
+import WeatherAPIKit
 
 class NotificationService {
     

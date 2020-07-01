@@ -9,6 +9,7 @@
 import UIKit
 import RxCocoa
 import RxSwift
+import WeatherAPIKit
 
 class NextWeekForecastView: UIView {
     

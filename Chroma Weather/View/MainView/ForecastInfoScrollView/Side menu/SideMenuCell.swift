@@ -12,6 +12,7 @@ import RxSwift
 import FBSDKLoginKit
 import GoogleSignIn
 import FBSDKCoreKit
+import WeatherAPIKit
 
 class SideMenuCell: UITableViewCell {
 

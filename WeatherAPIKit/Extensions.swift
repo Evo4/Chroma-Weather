@@ -13,7 +13,7 @@ import AFDateHelper
 // MARK: - Double
 extension Double {
     
-    func toCelsius()->String {
+    public func toCelsius()->String {
         return "\(Int(self - 273.15))°"
     }
 }
@@ -21,11 +21,11 @@ extension Double {
 // MARK: - String
 extension String {
     
-    func capitalizingFirstLetter() -> String {
+    public func capitalizingFirstLetter() -> String {
         return prefix(1).capitalized + dropFirst()
     }
 
-    mutating func capitalizeFirstLetter() {
+    public mutating func capitalizeFirstLetter() {
         self = self.capitalizingFirstLetter()
     }
 }
@@ -46,25 +46,25 @@ extension Date {
         return (date1Components.year == date2Components.year) && (date1Components.month == date2Components.month) && (date1Components.day == date2Components.day) && (date1Components.hour! > date2Components.hour!)
     }
     
-    func isNextHour()-> Bool {
+    public func isNextHour()-> Bool {
         return self.isNextHourOfDay(date: Date())
     }
     
     /**
     Returns Returns true if date is today.
     */
-    func isToday() -> Bool {
+    public func isToday() -> Bool {
         return self.isEqualToDateIgnoringTime(date: Date())
     }
     
-    func isDay(of date: Date)-> Bool {
+    public func isDay(of date: Date)-> Bool {
         return self.isEqualToDateIgnoringTime(date: date)
     }
     
     /**
     Returns true if date is tomorrow.
     */
-    func isTomorrow() -> Bool {
+    public func isTomorrow() -> Bool {
         let date = Date()
         let calendar = Calendar(identifier: .gregorian)
         if let date = calendar.date(byAdding: .day, value: 1, to: date) {
@@ -77,7 +77,7 @@ extension Date {
 
 //MARK: - UIView
 extension UIView {
-    func roundCorners(corners: UIRectCorner, radius: CGFloat) {
+    public func roundCorners(corners: UIRectCorner, radius: CGFloat) {
         if #available(iOS 11, *) {
             self.clipsToBounds = true
             self.layer.cornerRadius = radius
@@ -96,7 +96,7 @@ extension UIView {
         }
     }
     
-    func setGradientBackground(color1: UIColor, color2: UIColor) {
+    public func setGradientBackground(color1: UIColor, color2: UIColor) {
         let colorTop = color1.cgColor
         let colorBottom = color2.cgColor
 
@@ -109,7 +109,7 @@ extension UIView {
         self.layer.insertSublayer(gradientLayer, at:0)
     }
     
-    func setGradientBackground(color1: UIColor, color2: UIColor, width: CGFloat, height: CGFloat) {
+    public func setGradientBackground(color1: UIColor, color2: UIColor, width: CGFloat, height: CGFloat) {
         let colorTop = color1.cgColor
         let colorBottom = color2.cgColor
 
@@ -127,15 +127,15 @@ extension UIView {
 
 extension UIColor {
     // MARK: - methods for color brightness
-    func lighter(by percentage: CGFloat = 30.0) -> UIColor? {
+    public func lighter(by percentage: CGFloat = 30.0) -> UIColor? {
         return self.adjust(by: abs(percentage) )
     }
     
-    func darker(by percentage: CGFloat = 30.0) -> UIColor? {
+    public func darker(by percentage: CGFloat = 30.0) -> UIColor? {
         return self.adjust(by: -1 * abs(percentage) )
     }
     
-    func adjust(by percentage: CGFloat = 30.0) -> UIColor? {
+    public func adjust(by percentage: CGFloat = 30.0) -> UIColor? {
         var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
         if self.getRed(&red, green: &green, blue: &blue, alpha: &alpha) {
             return UIColor(red: min(red + percentage/100, 1.0),
@@ -147,7 +147,7 @@ extension UIColor {
         }
     }
     
-    static let dayColors: [String : UIColor] = [
+    static public let dayColors: [String : UIColor] = [
         "Monday" : #colorLiteral(red: 0.1568627451, green: 0.8784313725, blue: 0.6823529412, alpha: 1),
         "Tuesday" : #colorLiteral(red: 1, green: 0, blue: 0.5647058824, alpha: 1),
         "Wednesday" : #colorLiteral(red: 1, green: 0.6823529412, blue: 0, alpha: 1),
@@ -157,7 +157,7 @@ extension UIColor {
         "Sunday" : #colorLiteral(red: 0.842262849, green: 0.3658883037, blue: 0, alpha: 1),
     ]
     
-    static func getDayColor(day: String)-> UIColor {
+    static public func getDayColor(day: String)-> UIColor {
         if day == "Monday" {
             return UIColor.dayColors["Monday"]!
         }

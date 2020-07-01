@@ -8,37 +8,37 @@
 
 import Foundation
 
-class Settings {
+public class Settings {
     
-    static var shared: Settings = {
+    public static var shared: Settings = {
         let settings = Settings()
         return settings
     }()
     
-    var userIdToken: String? {
+    public var userIdToken: String? {
         return deserializeUserIdToken()
     }
     private let defs = UserDefaults.standard
     
-    var openWeatherAPIKey: String {
+    public var openWeatherAPIKey: String {
         return "ae23d67b60e778a5f2e70166f6953419"
     }
     
-    var badgeCounter: NSNumber {
+    public var badgeCounter: NSNumber {
         return deserilizeBadgeCounter()
     }
     
-    var locationStatus: Int32? {
+    public var locationStatus: Int32? {
         return deserializeLocationStatus()?.status
     }
     
-    var locationName: String? {
+    public var locationName: String? {
         return deserializeLocationName()
     }
     
     private init() {    }
     
-    func serializeUserIdToken(token: String?) {
+    public func serializeUserIdToken(token: String?) {
         defs.set(token, forKey: "idToken")
     }
     
@@ -47,7 +47,7 @@ class Settings {
         return token
     }
     
-    func serializeBangeCounter(badge: NSNumber) {
+    public func serializeBangeCounter(badge: NSNumber) {
         defs.set(badge, forKey: "badge")
     }
     
@@ -59,7 +59,7 @@ class Settings {
         }
     }
     
-    func serializeLocationStatus(status: LocationStatus?) {
+    public func serializeLocationStatus(status: LocationStatus?) {
         defs.set(try? PropertyListEncoder().encode(status), forKey: "locationStatus")
     }
     
@@ -71,7 +71,7 @@ class Settings {
         return status
     }
     
-    func serializeLocationName(of: String) {
+    public func serializeLocationName(of: String) {
         defs.string(forKey: "locationName")
     }
     

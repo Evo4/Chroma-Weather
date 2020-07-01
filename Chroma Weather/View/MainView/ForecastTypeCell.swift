@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import WeatherAPIKit
 
 class ForecastTypeCell: UICollectionViewCell {
     

@@ -10,7 +10,12 @@ import Foundation
 import RealmSwift
 import CoreLocation
 
-class RealmLocation: Object {
-    @objc dynamic var latitude: Double = 0.0
-    @objc dynamic var longitude: Double = 0.0
+@objcMembers public class RealmLocation: Object {
+    public dynamic var latitude: Double = 0.0
+    public dynamic var longitude: Double = 0.0
+    public dynamic var key: String = ""
+    
+    public override class func primaryKey() -> String? {
+        return "key"
+    }
 }

@@ -8,6 +8,7 @@
 
 import UIKit
 import FBSDKCoreKit
+import WeatherAPIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 

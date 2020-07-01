@@ -17,6 +17,7 @@ import RxRealm
 import GoogleSignIn
 import FBSDKLoginKit
 import FBSDKCoreKit
+import WeatherAPIKit
 
 class MainView: UIViewController {
 
@@ -323,6 +324,14 @@ class MainView: UIViewController {
     fileprivate func setupForecast() {
         let location = CLLocation(latitude: mainViewModel.realmLocations[0].latitude, longitude: mainViewModel.realmLocations[0].longitude)
         
+        //setup app groups realm
+        let fileURL = FileManager.default
+            .containerURL(forSecurityApplicationGroupIdentifier: "group.app.Chroma-Weather")!
+            .appendingPathComponent("default.realm")
+        let config = Realm.Configuration(fileURL: fileURL)
+        let appGroupsRealm = try! Realm(configuration: config)
+
+        
         // get today forecast from API
         mainViewModel.location
             .asObservable()
@@ -334,6 +343,14 @@ class MainView: UIViewController {
                     case .success(let forecast):
                         self?.mainViewModel.currentForecast.asObserver().onNext(forecast)
                         self?.currentWeatherView.forecastInfoAlpha = 1
+                        
+                        //save app group location value
+                        let realmLocation = RealmLocation()
+                        realmLocation.latitude = location.coordinate.latitude
+                        realmLocation.longitude = location.coordinate.longitude
+                        try! appGroupsRealm.write {
+                            appGroupsRealm.add(realmLocation, update: .all)
+                        }
                         break
                     case .failure(()):
                         break

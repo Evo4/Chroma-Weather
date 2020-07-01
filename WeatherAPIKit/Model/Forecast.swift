@@ -11,28 +11,28 @@ import RealmSwift
 import RxRealm
 
 // MARK: - Forecast
-@objcMembers class Forecast: Object, Codable {
-    var coord: Coord? = nil
-    var weather = List<Weather>()
-    var base: String = ""
-    var main: Stats? = nil
-    var visibility: Int = 0
-    var wind: Wind? = nil
-    var clouds: Clouds? = nil
-    var dt: Int = 0
-    var sys: Sys? = nil
-    var timezone: Int = 0
-    var id: Int = 0
-    var name: String = ""
-    var cod: Int = 0
-    var hourlyForecast = List<HourlyForecast>()
-    var forecastType: String = ""
+@objcMembers public class Forecast: Object, Codable {
+    public var coord: Coord? = nil
+    public var weather = List<Weather>()
+    public var base: String = ""
+    public var main: Stats? = nil
+    public var visibility: Int = 0
+    public var wind: Wind? = nil
+    public var clouds: Clouds? = nil
+    public var dt: Int = 0
+    public var sys: Sys? = nil
+    public var timezone: Int = 0
+    public var id: Int = 0
+    public var name: String = ""
+    public var cod: Int = 0
+    public var hourlyForecast = List<HourlyForecast>()
+    public var forecastType: String = ""
     
-    override class func primaryKey() -> String? {
+    override public class func primaryKey() -> String? {
         return "forecastType"
     }
     
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case coord
         case weather
         case base
@@ -79,10 +79,10 @@ import RxRealm
 }
 
 // MARK: - Clouds
-@objcMembers class Clouds: Object, Codable {
-    var all: Int = 0
+@objcMembers public class Clouds: Object, Codable {
+    public var all: Int = 0
     
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case all
     }
     
@@ -95,11 +95,11 @@ import RxRealm
 }
 
 // MARK: - Coord
-@objcMembers class Coord: Object, Codable {
-    var lon: Double = 0.0
-    var lat: Double = 0.0
+@objcMembers public class Coord: Object, Codable {
+    public var lon: Double = 0.0
+    public var lat: Double = 0.0
     
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case lon
         case lat
     }
@@ -114,15 +114,15 @@ import RxRealm
 }
 
 // MARK: - Main
-@objcMembers class Stats: Object, Codable {
-    var temp: Double = 0.0
-    var feelsLike: Double = 0.0
-    var tempMin: Double = 0.0
-    var tempMax: Double = 0.0
-    var pressure: Int = 0
-    var humidity: Int = 0
+@objcMembers public class Stats: Object, Codable {
+    public var temp: Double = 0.0
+    public var feelsLike: Double = 0.0
+    public var tempMin: Double = 0.0
+    public var tempMax: Double = 0.0
+    public var pressure: Int = 0
+    public var humidity: Int = 0
 
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case temp
         case feelsLike = "feels_like"
         case tempMin = "temp_min"
@@ -144,14 +144,14 @@ import RxRealm
 }
 
 // MARK: - Sys
-@objcMembers class Sys: Object, Codable {
-    var type: Int = 0
-    var id: Int = 0
-    var country: String = ""
-    var sunrise: Int = 0
-    var sunset: Int = 0
+@objcMembers public class Sys: Object, Codable {
+    public var type: Int = 0
+    public var id: Int = 0
+    public var country: String = ""
+    public var sunrise: Int = 0
+    public var sunset: Int = 0
     
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case type
         case id
         case country
@@ -172,11 +172,11 @@ import RxRealm
 }
 
 // MARK: - Wind
-@objcMembers class Wind: Object, Codable {
-    var speed: Double = 0.0
-    var deg: Double = 0.0
+@objcMembers public class Wind: Object, Codable {
+    public var speed: Double = 0.0
+    public var deg: Double = 0.0
     
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case speed
         case deg
     }
