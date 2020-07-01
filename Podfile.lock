@@ -1,0 +1,117 @@
+PODS:
+  - AFDateHelper (4.3.0)
+  - Alamofire (5.2.1)
+  - AppAuth (1.4.0):
+    - AppAuth/Core (= 1.4.0)
+    - AppAuth/ExternalUserAgent (= 1.4.0)
+  - AppAuth/Core (1.4.0)
+  - AppAuth/ExternalUserAgent (1.4.0)
+  - FBSDKCoreKit (7.1.1):
+    - FBSDKCoreKit/Basics (= 7.1.1)
+    - FBSDKCoreKit/Core (= 7.1.1)
+  - FBSDKCoreKit/Basics (7.1.1)
+  - FBSDKCoreKit/Core (7.1.1):
+    - FBSDKCoreKit/Basics
+  - FBSDKLoginKit (7.1.1):
+    - FBSDKLoginKit/Login (= 7.1.1)
+  - FBSDKLoginKit/Login (7.1.1):
+    - FBSDKCoreKit (~> 7.1.1)
+  - GoogleMaps (3.9.0):
+    - GoogleMaps/Maps (= 3.9.0)
+  - GoogleMaps/Base (3.9.0)
+  - GoogleMaps/Maps (3.9.0):
+    - GoogleMaps/Base
+  - GooglePlaces (3.9.0):
+    - GoogleMaps/Base (= 3.9.0)
+  - GoogleSignIn (5.0.2):
+    - AppAuth (~> 1.2)
+    - GTMAppAuth (~> 1.0)
+    - GTMSessionFetcher/Core (~> 1.1)
+  - GTMAppAuth (1.0.0):
+    - AppAuth/Core (~> 1.0)
+    - GTMSessionFetcher (~> 1.1)
+  - GTMSessionFetcher (1.4.0):
+    - GTMSessionFetcher/Full (= 1.4.0)
+  - GTMSessionFetcher/Core (1.4.0)
+  - GTMSessionFetcher/Full (1.4.0):
+    - GTMSessionFetcher/Core (= 1.4.0)
+  - Realm (5.1.0):
+    - Realm/Headers (= 5.1.0)
+  - Realm/Headers (5.1.0)
+  - RealmSwift (5.1.0):
+    - Realm (= 5.1.0)
+  - RxCocoa (5.1.1):
+    - RxRelay (~> 5)
+    - RxSwift (~> 5)
+  - RxCoreLocation (1.5.0):
+    - RxCoreLocation/Core (= 1.5.0)
+  - RxCoreLocation/Core (1.5.0):
+    - RxCocoa (~> 5.1)
+    - RxSwift (~> 5.1)
+  - RxGoogleMaps (4.0.0):
+    - GoogleMaps (~> 3)
+    - RxCocoa (~> 5)
+    - RxSwift (~> 5)
+  - RxRealm (3.0.0):
+    - RealmSwift (~> 5.0)
+    - RxSwift (~> 5.0)
+  - RxRelay (5.1.1):
+    - RxSwift (~> 5)
+  - RxSwift (5.1.1)
+
+DEPENDENCIES:
+  - AFDateHelper
+  - Alamofire
+  - FBSDKLoginKit
+  - GooglePlaces
+  - GoogleSignIn
+  - RxCocoa (~> 5)
+  - RxCoreLocation
+  - RxGoogleMaps
+  - RxRealm
+  - RxSwift (~> 5)
+
+SPEC REPOS:
+  trunk:
+    - AFDateHelper
+    - Alamofire
+    - AppAuth
+    - FBSDKCoreKit
+    - FBSDKLoginKit
+    - GoogleMaps
+    - GooglePlaces
+    - GoogleSignIn
+    - GTMAppAuth
+    - GTMSessionFetcher
+    - Realm
+    - RealmSwift
+    - RxCocoa
+    - RxCoreLocation
+    - RxGoogleMaps
+    - RxRealm
+    - RxRelay
+    - RxSwift
+
+SPEC CHECKSUMS:
+  AFDateHelper: b769c07d3d4784ee9a74633285304261bb27dc52
+  Alamofire: e911732990610fe89af59ac0077f923d72dc3dfd
+  AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
+  FBSDKCoreKit: b46507dc8b8cefed31d644e74d7cc30e2a715ef8
+  FBSDKLoginKit: 1a61d79e2b25e2fc0d03dccab1e34b38bbdf2546
+  GoogleMaps: 4b5346bddfe6911bb89155d43c903020170523ac
+  GooglePlaces: 1634d019549b969d40fe0ccb0b9513055adebe01
+  GoogleSignIn: 7137d297ddc022a7e0aa4619c86d72c909fa7213
+  GTMAppAuth: 4deac854479704f348309e7b66189e604cf5e01e
+  GTMSessionFetcher: 6f5c8abbab8a9bce4bb3f057e317728ec6182b10
+  Realm: bdea546851e37b4cf0a2400cef115c7c26fda488
+  RealmSwift: 70945aa168db93b215c460e9c8ef680261aa28af
+  RxCocoa: 32065309a38d29b5b0db858819b5bf9ef038b601
+  RxCoreLocation: 4789d980742b21c087062387f6758b456221fb2f
+  RxGoogleMaps: 5d8a91a26dc9e3f703c5be09424e3ecf7f607328
+  RxRealm: af7a3c857efd5a711c176f6df0d67418ad48293b
+  RxRelay: d77f7d771495f43c556cbc43eebd1bb54d01e8e9
+  RxSwift: 81470a2074fa8780320ea5fe4102807cb7118178
+
+PODFILE CHECKSUM: a27d10c0bdfcdc739e804784f8f79abb2aa0566e
+
+COCOAPODS: 1.8.4

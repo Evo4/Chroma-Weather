@@ -1,0 +1,6 @@
+framework module Pods_Chroma_Weather {
+  umbrella header "Pods-Chroma Weather-umbrella.h"
+
+  export *
+  module * { export * }
+}
