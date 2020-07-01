@@ -260,7 +260,7 @@ public enum Main: String, Codable {
     public var windDeg: Int = 0
     public var weather = List<Weather>()
     public var rain: Rain? = nil
-
+    
     public enum CodingKeys: String, CodingKey {
         case dt, temp
         case feelsLike = "feels_like"

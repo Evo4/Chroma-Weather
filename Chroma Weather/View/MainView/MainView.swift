@@ -331,7 +331,6 @@ class MainView: UIViewController {
         let config = Realm.Configuration(fileURL: fileURL)
         let appGroupsRealm = try! Realm(configuration: config)
 
-        
         // get today forecast from API
         mainViewModel.location
             .asObservable()

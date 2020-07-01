@@ -41,6 +41,10 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         completionHandler(NCUpdateResult.newData)
     }
     
+    @IBAction func openAppAction(_ sender: Any) {
+        extensionContext?.open(URL(string: "foo://")! , completionHandler: nil)
+    }
+    
     fileprivate func setupAppGroupsRealm() {
         //setup app groups realm
         let fileURL = FileManager.default
@@ -90,4 +94,5 @@ class TodayViewController: UIViewController, NCWidgetProviding {
             .bind(to: minTemperatureLabel.rx.text)
             .disposed(by: disposeBag)
     }
+    
 }
